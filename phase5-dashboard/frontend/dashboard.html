@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Review Analytics — Overview</title>
+    <meta name="description" content="AI-Powered Review Discovery Engine — Overview Dashboard for Spotify review analysis." />
+    <link rel="stylesheet" href="index.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="app-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <svg viewBox="0 0 24 24" fill="#1DB954" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="12" fill="#1DB954"/>
+                    <path d="M17.9 10.9C14.7 9 9.35 8.8 6.3 9.75C5.8 9.9 5.3 9.6 5.15 9.15C5 8.65 5.3 8.15 5.75 8C9.3 6.95 15.15 7.15 18.85 9.35C19.3 9.6 19.45 10.2 19.2 10.65C18.95 11 18.35 11.15 17.9 10.9ZM17.75 13.7C17.5 14.05 17.05 14.2 16.7 13.95C14 12.3 9.95 11.8 6.8 12.8C6.4 12.9 5.95 12.7 5.85 12.3C5.75 11.9 5.95 11.45 6.35 11.35C9.95 10.2 14.45 10.8 17.55 12.7C17.8 12.85 18 13.35 17.75 13.7ZM16.55 16.45C16.35 16.75 15.95 16.85 15.65 16.65C13.3 15.2 10.35 14.85 6.95 15.65C6.6 15.75 6.3 15.5 6.2 15.2C6.1 14.85 6.35 14.55 6.65 14.45C10.35 13.6 13.65 14 16.25 15.6C16.6 15.75 16.7 16.2 16.55 16.45Z" fill="black"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Spotify AI Analytics</h1>
+                <p>Insight Dashboard</p>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="dashboard.html" class="active">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Overview</span>
+            </a></li>
+            <li><a href="theme-classification.html">
+                <span class="material-symbols-outlined">category</span>
+                <span>Theme Classification</span>
+            </a></li>
+            <li><a href="behavior-patterns.html">
+                <span class="material-symbols-outlined">psychology</span>
+                <span>Behavior Patterns</span>
+            </a></li>
+            <li><a href="quote-extraction.html">
+                <span class="material-symbols-outlined">format_quote</span>
+                <span>Quote Extraction</span>
+            </a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button class="run-pipeline-btn" onclick="window.location.href='pipeline.html'">
+                <span class="material-symbols-outlined" style="font-size:18px;">play_arrow</span>
+                Run Pipeline
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <!-- Top Navigation Bar -->
+        <header class="topbar">
+            <h2 class="topbar-title">Review Analytics</h2>
+            <div class="topbar-actions">
+                <div class="topbar-icon-group">
+                    <button class="topbar-icon-btn" onclick="toggleTheme()" title="Toggle Theme">
+                        <span class="material-symbols-outlined">light_mode</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="page-content">
+
+            <!-- Row 1: KPI Cards -->
+            <section class="kpi-grid" id="kpi-cards">
+                <div class="kpi-card">
+                    <p class="kpi-label">Total Reviews Analyzed</p>
+                    <h3 class="kpi-value" id="kpi-total">6,083</h3>
+                    <div class="kpi-change positive">
+                        <span class="material-symbols-outlined">trending_up</span>
+                        <span>+12% this week</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">Avg Sentiment Score</p>
+                    <h3 class="kpi-value" id="kpi-sentiment">68%</h3>
+                    <div class="kpi-change positive">
+                        <span class="material-symbols-outlined">sentiment_satisfied</span>
+                        <span>Positive leaning</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">Themes Detected</p>
+                    <h3 class="kpi-value" id="kpi-themes">7</h3>
+                    <div class="kpi-change neutral">
+                        <span class="material-symbols-outlined">category</span>
+                        <span>Core clusters</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <p class="kpi-label">Top Data Source</p>
+                    <h3 class="kpi-value smaller" id="kpi-source">Reddit r/spotify</h3>
+                    <div class="kpi-change neutral">
+                        <span class="material-symbols-outlined">forum</span>
+                        <span>42% of volume</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Row 2: Charts -->
+            <section class="grid-3-col">
+                <!-- Doughnut Chart: 4-Class Sentiment -->
+                <div class="chart-bg doughnut-container" style="min-height: 300px;">
+                    <h4 class="chart-title" style="align-self: flex-start; width: 100%;">4-Class Sentiment</h4>
+                    <div class="doughnut" id="doughnut-chart">
+                        <div class="doughnut-center">
+                            <span class="value" id="doughnut-value">45%</span>
+                            <span class="label" id="doughnut-label">Positive</span>
+                        </div>
+                    </div>
+                    <div class="doughnut-legend">
+                        <div class="legend-item"><div class="legend-dot" style="background:#1DB954;"></div>Positive</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#F59E0B;"></div>Mixed</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#6B7280;"></div>Neutral</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#EF4444;"></div>Negative</div>
+                    </div>
+                </div>
+
+                <!-- Bar Chart: Theme Classification Volume -->
+                <div class="chart-bg" style="min-height: 300px; display: flex; flex-direction: column;">
+                    <h4 class="chart-title">Theme Classification Volume</h4>
+                    <div class="bar-chart" id="theme-bar-chart" style="display: flex; flex-direction: column; gap: 4px; flex-grow: 1; justify-content: center;">
+                        <div class="bar-wrap">
+                            <span class="bar-label">Algorithm Quality</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 85%;"></div></div>
+                            <span class="bar-percent">85%</span>
+                        </div>
+                        <div class="bar-wrap">
+                            <span class="bar-label">UI Changes</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 72%; background-color: #F59E0B;"></div></div>
+                            <span class="bar-percent">72%</span>
+                        </div>
+                        <div class="bar-wrap">
+                            <span class="bar-label">Battery Drain</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 45%; background-color: #EF4444;"></div></div>
+                            <span class="bar-percent">45%</span>
+                        </div>
+                        <div class="bar-wrap">
+                            <span class="bar-label">Podcast Intrusions</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 38%; background-color: #EF4444;"></div></div>
+                            <span class="bar-percent">38%</span>
+                        </div>
+                        <div class="bar-wrap">
+                            <span class="bar-label">Audio Quality</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 25%;"></div></div>
+                            <span class="bar-percent">25%</span>
+                        </div>
+                        <div class="bar-wrap">
+                            <span class="bar-label">Social Features</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 15%; background-color: #6B7280;"></div></div>
+                            <span class="bar-percent">15%</span>
+                        </div>
+                        <div class="bar-wrap">
+                            <span class="bar-label">Pricing</span>
+                            <div class="bar-track"><div class="bar-fill" style="width: 10%; background-color: #EF4444;"></div></div>
+                            <span class="bar-percent">10%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Row 3: Behavior Patterns & Extracted Quotes -->
+            <section class="grid-2-col" style="height: 400px;">
+                <!-- Behavior Patterns -->
+                <div class="chart-bg" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+                    <div class="section-header">
+                        <h4 class="chart-title" style="margin-bottom: 0;">Behavior Patterns</h4>
+                        <a href="behavior-patterns.html" class="view-all-btn">View All</a>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 8px;">
+                        <div class="pattern-card">
+                            <div class="pattern-icon" style="background: rgba(147, 0, 10, 0.2); color: #ffb4ab;">
+                                <span class="material-symbols-outlined">trending_down</span>
+                            </div>
+                            <div>
+                                <h5 class="pattern-title">Migration to Apple Music</h5>
+                                <p class="pattern-desc">Users report actively migrating to Apple Music immediately following the latest home screen UI update, citing confusion over navigation.</p>
+                            </div>
+                        </div>
+                        <div class="pattern-card">
+                            <div class="pattern-icon" style="background: rgba(29, 185, 84, 0.2); color: #53e076;">
+                                <span class="material-symbols-outlined">favorite</span>
+                            </div>
+                            <div>
+                                <h5 class="pattern-title">High Praise for Discovery</h5>
+                                <p class="pattern-desc">Discover Weekly remains the most highly praised feature, heavily anchoring user retention despite other UI complaints.</p>
+                            </div>
+                        </div>
+                        <div class="pattern-card">
+                            <div class="pattern-icon" style="background: rgba(52, 53, 53, 0.5); color: #c8c6c5;">
+                                <span class="material-symbols-outlined">headset_off</span>
+                            </div>
+                            <div>
+                                <h5 class="pattern-title">Podcast Fatigue</h5>
+                                <p class="pattern-desc">A growing segment of music-only users express frustration over forced podcast recommendations in their primary feed.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extracted Quotes -->
+                <div class="chart-bg" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+                    <div class="section-header">
+                        <h4 class="chart-title" style="margin-bottom: 0; display: flex; align-items: center; gap: 8px;">
+                            <span class="material-symbols-outlined" style="color: var(--color-primary);">format_quote</span>
+                            Extracted Quotes
+                        </h4>
+                        <button class="realtime-btn">
+                            <div class="realtime-dot pulse-dot"></div>
+                            Real-time Feed
+                        </button>
+                    </div>
+                    <div style="display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto; padding-right: 8px; gap: 4px;">
+                        <div class="list-row">
+                            <div style="width: 48px; padding-top: 4px; display: flex; justify-content: center;">
+                                <span class="badge badge-neg">NEG</span>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <p class="quote-text">"The new UI is a mess. I just want my music, why are there video podcasts autoplaying on my home screen? Cancelled and moved to Apple."</p>
+                                <span class="quote-meta">Reddit • 2h ago</span>
+                            </div>
+                        </div>
+                        <div class="list-row">
+                            <div style="width: 48px; padding-top: 4px; display: flex; justify-content: center;">
+                                <span class="badge badge-pos">POS</span>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <p class="quote-text">"Discover Weekly hit it out of the park again today. The algorithm literally knows my taste better than I do."</p>
+                                <span class="quote-meta">Twitter • 5h ago</span>
+                            </div>
+                        </div>
+                        <div class="list-row">
+                            <div style="width: 48px; padding-top: 4px; display: flex; justify-content: center;">
+                                <span class="badge badge-mix">MIX</span>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <p class="quote-text">"Love the audio quality options but the app drains my battery so fast now. Have to keep it plugged in while driving."</p>
+                                <span class="quote-meta">App Store Review • 1d ago</span>
+                            </div>
+                        </div>
+                        <div class="list-row">
+                            <div style="width: 48px; padding-top: 4px; display: flex; justify-content: center;">
+                                <span class="badge badge-neu">NEU</span>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <p class="quote-text">"Did they change the font size on desktop? Everything looks slightly larger today."</p>
+                                <span class="quote-meta">Reddit • 1d ago</span>
+                            </div>
+                        </div>
+                        <div class="list-row">
+                            <div style="width: 48px; padding-top: 4px; display: flex; justify-content: center;">
+                                <span class="badge badge-neg">NEG</span>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <p class="quote-text">"Stop trying to make me use the 'Smart Shuffle' feature. It turns itself on randomly and ruins my carefully curated playlists."</p>
+                                <span class="quote-meta">Spotify Community • 2d ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

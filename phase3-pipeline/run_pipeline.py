@@ -189,10 +189,15 @@ def save_processed_reviews(reviews: list[dict]) -> int:
 
 
 def clear_processed_reviews():
-    """Clear the processed_reviews table."""
+    """Clear the processed_reviews table (and dependent analysis_results)."""
     db = DatabaseManager()
     with db.connection() as conn:
-        conn.cursor().execute("DELETE FROM processed_reviews")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("DELETE FROM analysis_results")
+        except Exception:
+            pass
+        cursor.execute("DELETE FROM processed_reviews")
     logger.info("Cleared processed_reviews table")
 
 

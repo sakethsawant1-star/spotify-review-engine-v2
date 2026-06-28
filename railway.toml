@@ -1,0 +1,6 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "pip install -r requirements-deploy.txt && python -m spacy download en_core_web_sm"
+
+[deploy]
+startCommand = "uvicorn phase5-dashboard.app:app --host 0.0.0.0 --port $PORT"

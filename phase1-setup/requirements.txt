@@ -16,7 +16,6 @@ langdetect==1.0.9
 
 # --- LLM Analysis (Phase 4) ---
 groq==0.11.0
-httpx==0.27.2
 
 # --- Database (PostgreSQL) ---
 psycopg2-binary==2.9.10

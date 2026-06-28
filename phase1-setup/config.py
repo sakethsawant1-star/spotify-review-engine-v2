@@ -25,10 +25,10 @@ load_dotenv(dotenv_path=ENV_PATH)
 # 2. API Keys & Credentials
 # ──────────────────────────────────────────────
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "")
-REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "")
-REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "SpotifyReviewEngine/1.0")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "").strip()
+REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "").strip()
+REDDIT_USER_AGENT = os.getenv("REDDIT_USER_AGENT", "SpotifyReviewEngine/1.0").strip()
 
 # PostgreSQL (Supabase) — used in production
 DATABASE_URL = os.getenv("DATABASE_URL", "")

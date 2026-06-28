@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: review-discovery-backend
+    env: python
+    buildCommand: "pip install -r requirements-deploy.txt && python -m spacy download en_core_web_sm"
+    startCommand: "uvicorn phase5-dashboard.app:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: USE_POSTGRES
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: REDDIT_CLIENT_ID
+        sync: false
+      - key: REDDIT_CLIENT_SECRET
+        sync: false
+      - key: REDDIT_USER_AGENT
+        sync: false

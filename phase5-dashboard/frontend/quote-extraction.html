@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quote Extraction — Review Analytics</title>
+    <meta name="description" content="PII-stripped user quotes extracted from reviews, filterable by sentiment and source." />
+    <link rel="stylesheet" href="index.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <style>
+        .page-header {
+            margin-bottom: 32px;
+        }
+        .page-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .source-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background-color: var(--color-surface-container);
+            border: 1px solid #3d4a3d;
+            color: var(--color-text-primary);
+            font-size: 14px;
+            font-family: var(--font-family);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .source-dropdown:hover {
+            background-color: var(--color-surface-elevated);
+        }
+        .source-dropdown .material-symbols-outlined {
+            font-size: 18px;
+            color: var(--color-text-secondary);
+        }
+        .tracklist {
+            background-color: var(--color-surface);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .tracklist-header {
+            display: grid;
+            grid-template-columns: 48px 1fr 200px 150px;
+            gap: 16px;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--color-surface-highest);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .tracklist-body {
+            overflow-y: auto;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .track-row {
+            display: grid;
+            grid-template-columns: 48px 1fr 200px 150px;
+            gap: 16px;
+            align-items: center;
+            padding: 16px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+        .track-row:hover {
+            background-color: var(--color-surface-elevated);
+        }
+        .track-row:hover .track-date {
+            color: var(--color-text-primary);
+        }
+        .track-row:hover .theme-tag {
+            border-color: #3d4a3d;
+        }
+        .sentiment-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .sentiment-dot.positive {
+            background-color: var(--color-primary);
+            box-shadow: 0 0 8px rgba(29, 185, 84, 0.6);
+        }
+        .sentiment-dot.negative {
+            background-color: #ffb4ab;
+            box-shadow: 0 0 8px rgba(255, 180, 171, 0.6);
+        }
+        .sentiment-dot.mixed {
+            background-color: #a2a1a0;
+            box-shadow: 0 0 8px rgba(162, 161, 160, 0.6);
+        }
+        .sentiment-dot.neutral {
+            background-color: var(--color-surface-highest);
+            box-shadow: 0 0 8px rgba(56, 57, 58, 0.6);
+        }
+        .sentiment-dot.frustrated {
+            background-color: var(--color-negative);
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+        }
+        .track-quote {
+            font-size: 16px;
+            color: var(--color-text-primary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.5;
+            padding-right: 16px;
+            transition: color 0.2s ease;
+        }
+        .track-row:hover .track-quote {
+            color: #fff;
+        }
+        .track-themes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .track-date {
+            text-align: right;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            transition: color 0.2s ease;
+        }
+        .track-source {
+            font-size: 11px;
+            color: var(--color-text-muted);
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <svg viewBox="0 0 24 24" fill="#1DB954" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="12" fill="#1DB954"/>
+                    <path d="M17.9 10.9C14.7 9 9.35 8.8 6.3 9.75C5.8 9.9 5.3 9.6 5.15 9.15C5 8.65 5.3 8.15 5.75 8C9.3 6.95 15.15 7.15 18.85 9.35C19.3 9.6 19.45 10.2 19.2 10.65C18.95 11 18.35 11.15 17.9 10.9ZM17.75 13.7C17.5 14.05 17.05 14.2 16.7 13.95C14 12.3 9.95 11.8 6.8 12.8C6.4 12.9 5.95 12.7 5.85 12.3C5.75 11.9 5.95 11.45 6.35 11.35C9.95 10.2 14.45 10.8 17.55 12.7C17.8 12.85 18 13.35 17.75 13.7ZM16.55 16.45C16.35 16.75 15.95 16.85 15.65 16.65C13.3 15.2 10.35 14.85 6.95 15.65C6.6 15.75 6.3 15.5 6.2 15.2C6.1 14.85 6.35 14.55 6.65 14.45C10.35 13.6 13.65 14 16.25 15.6C16.6 15.75 16.7 16.2 16.55 16.45Z" fill="black"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Spotify AI Analytics</h1>
+                <p>Insight Dashboard</p>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="index.html">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Overview</span>
+            </a></li>
+            <li><a href="theme-classification.html">
+                <span class="material-symbols-outlined">category</span>
+                <span>Theme Classification</span>
+            </a></li>
+            <li><a href="behavior-patterns.html">
+                <span class="material-symbols-outlined">psychology</span>
+                <span>Behavior Patterns</span>
+            </a></li>
+            <li><a href="quote-extraction.html" class="active">
+                <span class="material-symbols-outlined">format_quote</span>
+                <span>Quote Extraction</span>
+            </a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button class="run-pipeline-btn" onclick="window.location.href='pipeline.html'">
+                <span class="material-symbols-outlined" style="font-size:18px;">play_arrow</span>
+                Run Pipeline
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <header class="topbar">
+            <h2 class="topbar-title">Review Analytics</h2>
+            <div class="topbar-actions">
+                <div class="topbar-icon-group">
+                    <button class="topbar-icon-btn" onclick="toggleTheme()" title="Toggle Theme">
+                        <span class="material-symbols-outlined">light_mode</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="page-content" style="display: flex; flex-direction: column; flex: 1;">
+            <div class="page-header">
+                <h2>Extracted Quotes Database</h2>
+                <div class="filter-bar">
+                    <div class="pill-filters">
+                        <button class="pill-btn active" data-filter="all">All Sentiments</button>
+                        <button class="pill-btn" data-filter="positive">Positive</button>
+                        <button class="pill-btn" data-filter="negative">Negative</button>
+                        <button class="pill-btn" data-filter="mixed">Mixed</button>
+                        <button class="pill-btn" data-filter="neutral">Neutral</button>
+                    </div>
+                    <select class="source-dropdown" id="source-filter" style="background: var(--color-surface-elevated); color: var(--color-text-primary); border: 1px solid var(--color-border); padding: 8px 16px; border-radius: 20px; outline: none; cursor: pointer; font-family: inherit;">
+                        <option value="all">Filter by Source</option>
+                        <option value="play_store">Play Store</option>
+                        <option value="app_store">App Store</option>
+                        <option value="reddit">Reddit</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tracklist -->
+            <div class="tracklist">
+                <div class="tracklist-header">
+                    <div style="text-align: center;">#</div>
+                    <div>Quote Extract</div>
+                    <div>Themes</div>
+                    <div style="text-align: right;">Date / Source</div>
+                </div>
+                <div class="tracklist-body" id="quotes-container">
+                    <!-- Row 1 -->
+                    <div class="track-row" data-sentiment="negative">
+                        <div style="display: flex; justify-content: center;">
+                            <div class="sentiment-dot negative"></div>
+                        </div>
+                        <p class="track-quote">"Discover Weekly used to surprise me, now it's just the same 5 artists on rotation. I've stopped checking it entirely."</p>
+                        <div class="track-themes">
+                            <span class="theme-tag">Algorithm Staleness</span>
+                        </div>
+                        <div class="track-date">
+                            <div>Jun 12</div>
+                            <div class="track-source">Google Play Store</div>
+                        </div>
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="track-row" data-sentiment="frustrated">
+                        <div style="display: flex; justify-content: center;">
+                            <div class="sentiment-dot frustrated"></div>
+                        </div>
+                        <p class="track-quote">"I've been a premium user for 4 years and the algorithm has completely stagnated. I'm actively looking at Apple Music now."</p>
+                        <div class="track-themes">
+                            <span class="theme-tag">Algorithm Staleness</span>
+                            <span class="theme-tag">Playlist Decay</span>
+                        </div>
+                        <div class="track-date">
+                            <div>Jun 10</div>
+                            <div class="track-source">Reddit r/spotify</div>
+                        </div>
+                    </div>
+                    <!-- Row 3 -->
+                    <div class="track-row" data-sentiment="positive">
+                        <div style="display: flex; justify-content: center;">
+                            <div class="sentiment-dot positive"></div>
+                        </div>
+                        <p class="track-quote">"Discover Weekly hit it out of the park again today. The algorithm literally knows my taste better than I do."</p>
+                        <div class="track-themes">
+                            <span class="theme-tag">Algorithm Staleness</span>
+                        </div>
+                        <div class="track-date">
+                            <div>Jun 9</div>
+                            <div class="track-source">Twitter / X</div>
+                        </div>
+                    </div>
+                    <!-- Row 4 -->
+                    <div class="track-row" data-sentiment="negative">
+                        <div style="display: flex; justify-content: center;">
+                            <div class="sentiment-dot negative"></div>
+                        </div>
+                        <p class="track-quote">"I listen to one jazz playlist and now Spotify thinks I only want jazz forever. Can't break out of this genre bubble."</p>
+                        <div class="track-themes">
+                            <span class="theme-tag">Genre Bubble</span>
+                        </div>
+                        <div class="track-date">
+                            <div>Jun 8</div>
+                            <div class="track-source">Reddit r/Music</div>
+                        </div>
+                    </div>
+                    <!-- Row 5 -->
+                    <div class="track-row" data-sentiment="frustrated">
+                        <div style="display: flex; justify-content: center;">
+                            <div class="sentiment-dot frustrated"></div>
+                        </div>
+                        <p class="track-quote">"Stop trying to make me use the 'Smart Shuffle' feature. It turns itself on randomly and ruins my carefully curated playlists."</p>
+                        <div class="track-themes">
+                            <span class="theme-tag">Feature Gap</span>
+                        </div>
+                        <div class="track-date">
+                            <div>Jun 7</div>
+                            <div class="track-source">Spotify Community</div>
+                        </div>
+                    </div>
+                    <!-- Row 6 -->
+                    <div class="track-row" data-sentiment="neutral">
+                        <div style="display: flex; justify-content: center;">
+                            <div class="sentiment-dot neutral"></div>
+                        </div>
+                        <p class="track-quote">"Did they change the font size on desktop? Everything looks slightly larger today. Not sure if I like it or not."</p>
+                        <div class="track-themes">
+                            <span class="theme-tag">Feature Gap</span>
+                        </div>
+                        <div class="track-date">
+                            <div>Jun 6</div>
+                            <div class="track-source">Reddit r/spotify</div>
+                        </div>
+                    </div>
+                    <!-- Row 7 -->
+                    <div class="track-row" data-sentiment="negative">
+                        <div style="display: flex; justify-content: center;">
+                            <div class="sentiment-dot negative"></div>
+                        </div>
+                        <p class="track-quote">"The new UI is a mess. I just want my music, why are there video podcasts autoplaying on my home screen?"</p>
+                        <div class="track-themes">
+                            <span class="theme-tag">Context Mismatch</span>
+                        </div>
+                        <div class="track-date">
+                            <div>Jun 5</div>
+                            <div class="track-source">App Store Review</div>
+                        </div>
+                    </div>
+                    <!-- Row 8 -->
+                    <div class="track-row" data-sentiment="positive">
+                        <div style="display: flex; justify-content: center;">
+                            <div class="sentiment-dot positive"></div>
+                        </div>
+                        <p class="track-quote">"Found an incredible underground artist through Daily Mix today. This is exactly why I still use Spotify over everything else."</p>
+                        <div class="track-themes">
+                            <span class="theme-tag">Playlist Decay</span>
+                        </div>
+                        <div class="track-date">
+                            <div>Jun 4</div>
+                            <div class="track-source">Google Play Store</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

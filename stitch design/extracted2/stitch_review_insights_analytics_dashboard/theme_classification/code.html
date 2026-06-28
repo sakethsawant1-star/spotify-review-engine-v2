@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Theme Classification - Review Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#a2a1a0",
+                        "on-primary-container": "#004118",
+                        "surface-variant": "#343535",
+                        "on-background": "#e3e2e2",
+                        "on-surface-variant": "#bccbb9",
+                        "outline-variant": "#3d4a3d",
+                        "background": "#121414",
+                        "primary": "#53e076",
+                        "primary-container": "#1db954",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-primary-fixed-variant": "#005320",
+                        "primary-fixed": "#72fe8f",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "error": "#ffb4ab",
+                        "tertiary-fixed": "#e4e2e1",
+                        "secondary-container": "#4a4949",
+                        "on-primary": "#003914",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-primary-fixed": "#002108",
+                        "surface-container-lowest": "#0d0e0f",
+                        "surface-bright": "#38393a",
+                        "secondary": "#c8c6c5",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "primary-fixed-dim": "#53e076",
+                        "secondary-fixed": "#e5e2e1",
+                        "on-surface": "#e3e2e2",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#383838",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-secondary": "#313030",
+                        "surface-container-high": "#292a2a",
+                        "surface-container-highest": "#343535",
+                        "inverse-surface": "#e3e2e2",
+                        "on-secondary-fixed-variant": "#474646",
+                        "inverse-primary": "#006e2d",
+                        "inverse-on-surface": "#2f3131",
+                        "surface-dim": "#121414",
+                        "surface": "#121414",
+                        "tertiary": "#c8c6c5",
+                        "on-tertiary": "#303030",
+                        "on-secondary-container": "#bab8b7",
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+                        "surface-container": "#1e2020",
+                        "surface-tint": "#53e076",
+                        "surface-container-low": "#1a1c1c",
+                        "outline": "#869585",
+                        
+                        "spotify-surface": "#181818",
+                        "spotify-hover": "#282828"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "topbar-height": "64px",
+                        "sidebar-width": "250px",
+                        "card-gap": "16px",
+                        "container-padding": "32px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Montserrat"],
+                        "label-md": ["Montserrat"],
+                        "headline-md": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "headline-sm": ["Montserrat"],
+                        "body-lg": ["Montserrat"],
+                        "label-sm": ["Montserrat"],
+                        "headline-lg": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #000000; color: #ffffff; margin: 0; padding: 0; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        
+        .sentiment-bar { display: flex; height: 6px; border-radius: 3px; overflow: hidden; width: 100%; margin-top: 12px; margin-bottom: 16px; }
+        .s-green { background-color: #1DB954; }
+        .s-yellow { background-color: #F4C430; }
+        .s-grey { background-color: #535353; }
+        .s-red { background-color: #E22134; }
+        
+        .keyword-chip { background: transparent; border: 1px solid #535353; border-radius: 9999px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: #B3B3B3; margin-right: 8px; margin-bottom: 8px; display: inline-block; }
+    </style>
+</head>
+<body class="antialiased min-h-screen font-body-md text-on-surface bg-black">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-container-padding fixed left-0 top-0 h-screen w-sidebar-width bg-surface-container-lowest dark:bg-surface-container-lowest z-40">
+<div class="px-gutter mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary mb-1">AI Analytics</h1>
+<p class="text-label-md font-label-md text-secondary-fixed-dim">Insight Dashboard</p>
+</div>
+<ul class="flex flex-col gap-2 px-4 flex-1">
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container-high transition-all duration-200 text-body-md font-body-md group" href="#">
+<span class="material-symbols-outlined group-hover:scale-105 transition-transform duration-200" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-primary font-bold border-r-4 border-primary bg-surface-container-low text-body-md font-body-md group" href="#">
+<span class="material-symbols-outlined fill group-hover:scale-105 transition-transform duration-200" data-icon="category">category</span>
+<span>Theme Classification</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container-high transition-all duration-200 text-body-md font-body-md group" href="#">
+<span class="material-symbols-outlined group-hover:scale-105 transition-transform duration-200" data-icon="psychology">psychology</span>
+<span>Behavior Patterns</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container-high transition-all duration-200 text-body-md font-body-md group" href="#">
+<span class="material-symbols-outlined group-hover:scale-105 transition-transform duration-200" data-icon="format_quote">format_quote</span>
+<span>Quote Extraction</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto px-gutter flex items-center gap-3 pt-6 border-t border-surface-container-high">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A macro photograph of an abstract, dark obsidian surface with subtle, glowing green digital circuit patterns illuminating from beneath. The lighting is low-key, moody, and highly detailed, conveying a sense of premium, advanced technology suitable for a professional analytics platform profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1uwq6M6U5rRe400PvPNtJ1zljJF_LdG67rqf_4LBgflTSd6X_53Wgx4vJtfwIeEfyRIJsY67vb5tIQqvVijdCb4hnr4NtMFxKszmuermv0XdZ-5s6PTZ3TvkIg8OcLmHD6Sf8hPewmbmEeqVuBcRW6RGbRu92xw9mwce-ctXJoy5Rncx8WLkFRQenA_G1goj926fYnYUbnPx34HY3JDntpPWuuOKRdMRVBp1z9Baqp9sqZnjSco_UWKB9oe3lnamtnmgmiNZx-Jw"/>
+<div class="flex flex-col">
+<span class="text-label-md font-label-md font-bold text-on-surface">Analyst Profile</span>
+</div>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="flex items-center justify-between px-gutter w-full ml-[250px] max-w-[calc(100%-250px)] sticky top-0 z-50 h-topbar-height bg-background/70 backdrop-blur-md">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-tertiary">search</span>
+<input class="w-full bg-surface-container-high text-on-surface rounded-full py-2 pl-10 pr-4 border-none focus-within:ring-2 focus-within:ring-primary focus:outline-none transition-colors placeholder:text-tertiary" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-label-md font-label-md text-on-surface hover:text-primary transition-colors font-bold uppercase tracking-widest hidden lg:block">
+                Date Filter
+            </button>
+<div class="flex items-center gap-4">
+<button aria-label="notifications" class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button aria-label="settings" class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[250px] p-8 max-w-7xl">
+<div class="mb-10">
+<h2 class="text-display-lg font-display-lg text-white mb-2 tracking-tight">Theme Classification</h2>
+<p class="text-body-lg font-body-lg text-secondary-fixed-dim">Breakdown of user review themes by volume and sentiment.</p>
+</div>
+<!-- Bento Grid for Themes -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-card-gap">
+<!-- Card 1: Algorithm Quality -->
+<div class="bg-spotify-surface hover:bg-spotify-hover transition-colors duration-200 rounded-lg p-6 flex flex-col group cursor-pointer xl:col-span-2">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-headline-md font-headline-md text-white group-hover:text-primary transition-colors">Algorithm Quality</h3>
+<span class="material-symbols-outlined text-secondary-fixed-dim">troubleshoot</span>
+</div>
+<div class="mb-2">
+<span class="text-headline-sm font-headline-sm text-secondary-fixed-dim">Volume:</span>
+<span class="text-headline-lg font-headline-lg text-white ml-2">1,204</span>
+</div>
+<div class="sentiment-bar">
+<div class="s-green" style="width: 55%;"></div>
+<div class="s-yellow" style="width: 25%;"></div>
+<div class="s-grey" style="width: 10%;"></div>
+<div class="s-red" style="width: 10%;"></div>
+</div>
+<div class="flex justify-between text-label-sm font-label-sm text-secondary-fixed-dim mb-4">
+<span>Positive</span>
+<span>Negative</span>
+</div>
+<div class="mt-auto">
+<div class="keyword-chip">recommendations</div>
+<div class="keyword-chip">discovery</div>
+<div class="keyword-chip">repetitive</div>
+</div>
+</div>
+<!-- Card 2: UI Changes -->
+<div class="bg-spotify-surface hover:bg-spotify-hover transition-colors duration-200 rounded-lg p-6 flex flex-col group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-headline-md font-headline-md text-white group-hover:text-primary transition-colors">UI Changes</h3>
+<span class="material-symbols-outlined text-secondary-fixed-dim">design_services</span>
+</div>
+<div class="mb-2">
+<span class="text-body-lg font-body-lg text-secondary-fixed-dim block">Mentions</span>
+<span class="text-headline-lg font-headline-lg text-white">845</span>
+</div>
+<div class="sentiment-bar">
+<div class="s-green" style="width: 20%;"></div>
+<div class="s-yellow" style="width: 30%;"></div>
+<div class="s-grey" style="width: 15%;"></div>
+<div class="s-red" style="width: 35%;"></div>
+</div>
+<div class="mt-auto pt-4">
+<div class="keyword-chip">cluttered</div>
+<div class="keyword-chip">update</div>
+<div class="keyword-chip">hard to find</div>
+</div>
+</div>
+<!-- Card 3: Battery Drain -->
+<div class="bg-spotify-surface hover:bg-spotify-hover transition-colors duration-200 rounded-lg p-6 flex flex-col group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-headline-md font-headline-md text-white group-hover:text-primary transition-colors">Battery Drain</h3>
+<span class="material-symbols-outlined text-secondary-fixed-dim">battery_alert</span>
+</div>
+<div class="mb-2">
+<span class="text-body-lg font-body-lg text-secondary-fixed-dim block">Mentions</span>
+<span class="text-headline-lg font-headline-lg text-white">612</span>
+</div>
+<div class="sentiment-bar">
+<div class="s-green" style="width: 5%;"></div>
+<div class="s-yellow" style="width: 15%;"></div>
+<div class="s-grey" style="width: 20%;"></div>
+<div class="s-red" style="width: 60%;"></div>
+</div>
+<div class="mt-auto pt-4">
+<div class="keyword-chip">background</div>
+<div class="keyword-chip">overheating</div>
+<div class="keyword-chip">usage</div>
+</div>
+</div>
+<!-- Card 4: Podcast Intrusions -->
+<div class="bg-spotify-surface hover:bg-spotify-hover transition-colors duration-200 rounded-lg p-6 flex flex-col group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-headline-md font-headline-md text-white group-hover:text-primary transition-colors leading-tight">Podcast Intrusions</h3>
+<span class="material-symbols-outlined text-secondary-fixed-dim">podcasts</span>
+</div>
+<div class="mb-2">
+<span class="text-body-lg font-body-lg text-secondary-fixed-dim block">Mentions</span>
+<span class="text-headline-lg font-headline-lg text-white">590</span>
+</div>
+<div class="sentiment-bar">
+<div class="s-green" style="width: 10%;"></div>
+<div class="s-yellow" style="width: 20%;"></div>
+<div class="s-grey" style="width: 20%;"></div>
+<div class="s-red" style="width: 50%;"></div>
+</div>
+<div class="mt-auto pt-4">
+<div class="keyword-chip">home screen</div>
+<div class="keyword-chip">forced</div>
+<div class="keyword-chip">music only</div>
+</div>
+</div>
+<!-- Card 5: Audio Quality -->
+<div class="bg-spotify-surface hover:bg-spotify-hover transition-colors duration-200 rounded-lg p-6 flex flex-col group cursor-pointer xl:col-span-2">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-headline-md font-headline-md text-white group-hover:text-primary transition-colors">Audio Quality</h3>
+<span class="material-symbols-outlined text-secondary-fixed-dim">graphic_eq</span>
+</div>
+<div class="mb-2">
+<span class="text-headline-sm font-headline-sm text-secondary-fixed-dim">Volume:</span>
+<span class="text-headline-lg font-headline-lg text-white ml-2">430</span>
+</div>
+<div class="sentiment-bar">
+<div class="s-green" style="width: 40%;"></div>
+<div class="s-yellow" style="width: 30%;"></div>
+<div class="s-grey" style="width: 20%;"></div>
+<div class="s-red" style="width: 10%;"></div>
+</div>
+<div class="flex justify-between text-label-sm font-label-sm text-secondary-fixed-dim mb-4">
+<span>Positive</span>
+<span>Negative</span>
+</div>
+<div class="mt-auto">
+<div class="keyword-chip">lossless</div>
+<div class="keyword-chip">spatial</div>
+<div class="keyword-chip">volume normalization</div>
+</div>
+</div>
+<!-- Card 6: Social Features -->
+<div class="bg-spotify-surface hover:bg-spotify-hover transition-colors duration-200 rounded-lg p-6 flex flex-col group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-headline-md font-headline-md text-white group-hover:text-primary transition-colors">Social Features</h3>
+<span class="material-symbols-outlined text-secondary-fixed-dim">group</span>
+</div>
+<div class="mb-2">
+<span class="text-body-lg font-body-lg text-secondary-fixed-dim block">Mentions</span>
+<span class="text-headline-lg font-headline-lg text-white">312</span>
+</div>
+<div class="sentiment-bar">
+<div class="s-green" style="width: 60%;"></div>
+<div class="s-yellow" style="width: 20%;"></div>
+<div class="s-grey" style="width: 15%;"></div>
+<div class="s-red" style="width: 5%;"></div>
+</div>
+<div class="mt-auto pt-4">
+<div class="keyword-chip">blend</div>
+<div class="keyword-chip">friends activity</div>
+<div class="keyword-chip">sharing</div>
+</div>
+</div>
+<!-- Card 7: Pricing -->
+<div class="bg-spotify-surface hover:bg-spotify-hover transition-colors duration-200 rounded-lg p-6 flex flex-col group cursor-pointer">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-headline-md font-headline-md text-white group-hover:text-primary transition-colors">Pricing</h3>
+<span class="material-symbols-outlined text-secondary-fixed-dim">payments</span>
+</div>
+<div class="mb-2">
+<span class="text-body-lg font-body-lg text-secondary-fixed-dim block">Mentions</span>
+<span class="text-headline-lg font-headline-lg text-white">289</span>
+</div>
+<div class="sentiment-bar">
+<div class="s-green" style="width: 15%;"></div>
+<div class="s-yellow" style="width: 25%;"></div>
+<div class="s-grey" style="width: 20%;"></div>
+<div class="s-red" style="width: 40%;"></div>
+</div>
+<div class="mt-auto pt-4">
+<div class="keyword-chip">increase</div>
+<div class="keyword-chip">family plan</div>
+<div class="keyword-chip">worth it</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,32 @@
+{
+  "primary": [
+    "discover",
+    "discovery",
+    "Discover Weekly",
+    "Release Radar",
+    "recommend",
+    "recommendation",
+    "suggested",
+    "algorithm",
+    "new music",
+    "new songs",
+    "new artists",
+    "explore"
+  ],
+  "secondary": [
+    "same songs",
+    "repetitive",
+    "repeat",
+    "boring",
+    "stale",
+    "bubble",
+    "loop",
+    "skip",
+    "predictable",
+    "stuck",
+    "Daily Mix",
+    "playlist",
+    "radio",
+    "similar artists"
+  ]
+}

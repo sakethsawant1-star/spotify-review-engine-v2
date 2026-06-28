@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pipeline Execution</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e3e2e2",
+                        "surface-container-low": "#1a1c1c",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#006e2d",
+                        "tertiary-container": "#a2a1a0",
+                        "surface-variant": "#343535",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#bccbb9",
+                        "on-background": "#e3e2e2",
+                        "primary-fixed": "#72fe8f",
+                        "on-secondary-container": "#bab8b7",
+                        "primary": "#53e076",
+                        "inverse-on-surface": "#2f3131",
+                        "surface": "#121414",
+                        "on-primary-fixed": "#002108",
+                        "primary-container": "#1db954",
+                        "on-surface": "#e3e2e2",
+                        "on-tertiary-fixed": "#1b1c1c",
+                        "background": "#121414",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "on-primary": "#003914",
+                        "on-primary-fixed-variant": "#005320",
+                        "outline-variant": "#3d4a3d",
+                        "surface-container-highest": "#343535",
+                        "surface-container-high": "#292a2a",
+                        "on-secondary": "#313030",
+                        "on-primary-container": "#004118",
+                        "surface-tint": "#53e076",
+                        "surface-bright": "#38393a",
+                        "primary-fixed-dim": "#53e076",
+                        "secondary-fixed": "#e5e2e1",
+                        "tertiary-fixed": "#e4e2e1",
+                        "secondary": "#c8c6c5",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-container": "#383838",
+                        "outline": "#869585",
+                        "surface-container-lowest": "#0d0e0f",
+                        "on-secondary-fixed-variant": "#474646",
+                        "on-error": "#690005",
+                        "secondary-container": "#4a4949",
+                        "surface-dim": "#121414",
+                        "on-tertiary": "#303030",
+                        "tertiary": "#c8c6c5",
+                        "surface-container": "#1e2020",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#1c1b1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "32px",
+                        "topbar-height": "64px",
+                        "gutter": "24px",
+                        "card-gap": "16px",
+                        "sidebar-width": "250px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Montserrat"],
+                        "headline-sm": ["Montserrat"],
+                        "body-md": ["Montserrat"],
+                        "label-md": ["Montserrat"],
+                        "label-sm": ["Montserrat"],
+                        "body-lg": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "display-lg": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.04em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #000000; color: #FFFFFF; font-family: 'Montserrat', sans-serif; }
+        
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-opacity 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(29, 185, 84, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(29, 185, 84, 0.8); }
+        }
+        .glow-active {
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes terminal-scroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        
+        .terminal-content {
+            display: flex;
+            flex-direction: column;
+            animation: terminal-scroll 10s linear infinite;
+        }
+
+        .timeline-connector {
+            position: absolute;
+            left: 23px; /* Center of 48px icon */
+            top: 48px;
+            bottom: -24px;
+            width: 2px;
+            background: #282828;
+            z-index: 0;
+        }
+        
+        .timeline-connector.active {
+            background: linear-gradient(to bottom, #1DB954 50%, #282828 50%);
+            background-size: 100% 200%;
+            animation: slide-gradient 2s linear infinite;
+        }
+
+        @keyframes slide-gradient {
+            0% { background-position: 100% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-8 bg-black">
+<main class="w-full max-w-4xl bg-[#121212] rounded-xl p-8 shadow-2xl relative overflow-hidden">
+<!-- Header -->
+<header class="text-center mb-12">
+<h1 class="font-headline-lg text-headline-lg text-on-surface animate-pulse-slow tracking-tight">Analyzing Review Data...</h1>
+</header>
+<!-- Timeline Container -->
+<div class="space-y-12 relative">
+<!-- Step 1: Data Collection -->
+<div class="flex items-start gap-6 relative z-10 group">
+<div class="timeline-connector bg-primary-container"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary-container flex items-center justify-center shadow-lg relative z-10">
+<span class="material-symbols-outlined text-[#000000] font-bold" data-icon="cloud_download" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1 pt-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Data Collection</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Gathering reviews from Google Play, App Store, Reddit, and Spotify Community.</p>
+</div>
+</div>
+<!-- Step 2: Data Pipeline -->
+<div class="flex items-start gap-6 relative z-10 group">
+<div class="timeline-connector active"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary-container flex items-center justify-center shadow-lg relative z-10">
+<span class="material-symbols-outlined text-[#000000] font-bold" data-icon="database" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1 pt-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Data Pipeline</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Normalizing text, removing PII, and deduplicating records into SQLite.</p>
+</div>
+</div>
+<!-- Step 3: LLM Analysis Agent (Active) -->
+<div class="flex items-start gap-6 relative z-10 group">
+<div class="timeline-connector"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface border-2 border-primary-container flex items-center justify-center relative z-10 glow-active">
+<svg class="animate-spin h-6 w-6 text-primary-container absolute" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+<span class="material-symbols-outlined text-primary-container text-sm absolute" data-icon="psychology">psychology</span>
+</div>
+<div class="flex-1 pt-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary-container mb-2 flex items-center gap-2">
+                            LLM Analysis Agent
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-primary-container text-[#000000]">ACTIVE</span>
+</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Running 4-class sentiment analysis, classifying 7 core themes, and extracting key user quotes.</p>
+</div>
+<!-- Terminal Console -->
+<div class="bg-[#0A0A0A] border border-[#282828] rounded-md p-4 h-32 overflow-hidden relative font-mono text-xs">
+<div class="terminal-content text-primary opacity-80 absolute top-0 w-full" id="terminal-logs">
+<p class="mb-1">&gt; Initializing models... [OK]</p>
+<p class="mb-1">&gt; Loading dataset (12,405 records)... [OK]</p>
+<p class="mb-1">&gt; Starting batch inference...</p>
+<p class="mb-1">&gt; Classifying sentiment for review #1449... [OK]</p>
+<p class="mb-1">&gt; Classifying sentiment for review #1450... [OK]</p>
+<p class="mb-1">&gt; Extracting themes for batch A... [OK]</p>
+<p class="mb-1">&gt; Classifying sentiment for review #1451... [OK]</p>
+<p class="mb-1">&gt; Classifying sentiment for review #1452... [PROCESSING]</p>
+<!-- Duplicated for seamless scrolling -->
+<p class="mb-1 mt-4">&gt; Initializing models... [OK]</p>
+<p class="mb-1">&gt; Loading dataset (12,405 records)... [OK]</p>
+<p class="mb-1">&gt; Starting batch inference...</p>
+<p class="mb-1">&gt; Classifying sentiment for review #1449... [OK]</p>
+<p class="mb-1">&gt; Classifying sentiment for review #1450... [OK]</p>
+<p class="mb-1">&gt; Extracting themes for batch A... [OK]</p>
+<p class="mb-1">&gt; Classifying sentiment for review #1451... [OK]</p>
+<p class="mb-1">&gt; Classifying sentiment for review #1452... [PROCESSING]</p>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-[#0A0A0A] to-transparent"></div>
+</div>
+</div>
+</div>
+<!-- Step 4: Insight Generation -->
+<div class="flex items-start gap-6 relative z-10 group opacity-50">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface border-2 border-[#3E3E3E] flex items-center justify-center relative z-10">
+<span class="material-symbols-outlined text-[#757575]" data-icon="insert_chart">insert_chart</span>
+</div>
+<div class="flex-1 pt-1">
+<h3 class="font-headline-sm text-headline-sm text-[#757575] mb-2">Insight Generation</h3>
+<p class="font-body-md text-body-md text-[#4d4d4d]">Detecting behavior patterns and formatting actionable insights for the dashboard.</p>
+</div>
+</div>
+</div>
+<!-- Background decorative glow -->
+<div class="absolute -top-32 -right-32 w-96 h-96 bg-primary-container rounded-full opacity-[0.03] blur-3xl mix-blend-screen pointer-events-none"></div>
+</main>
+<script>
+        // Simple script to periodically add logs to the terminal for realism
+        const terminalLogs = document.getElementById('terminal-logs');
+        let reviewId = 1453;
+        
+        setInterval(() => {
+            const newLog = document.createElement('p');
+            newLog.className = 'mb-1 text-primary opacity-80';
+            
+            const actions = [
+                `> Classifying sentiment for review #${reviewId}... [OK]`,
+                `> Extracting quote from review #${reviewId}... [OK]`,
+                `> Mapping theme mapping for batch C... [PROCESSING]`,
+                `> Normalizing sentiment scores... [OK]`
+            ];
+            
+            newLog.innerText = actions[Math.floor(Math.random() * actions.length)];
+            terminalLogs.appendChild(newLog);
+            reviewId++;
+            
+            // Keep DOM cleanish, remove oldest after a while
+            if (terminalLogs.children.length > 30) {
+                terminalLogs.removeChild(terminalLogs.firstChild);
+            }
+        }, 1200);
+    </script>
+</body></html>

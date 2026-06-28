@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Behavior Patterns View - Review Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#a2a1a0",
+                    "on-primary-container": "#004118",
+                    "surface-variant": "#343535",
+                    "on-background": "#e3e2e2",
+                    "on-surface-variant": "#bccbb9",
+                    "outline-variant": "#3d4a3d",
+                    "background": "#121414",
+                    "primary": "#53e076",
+                    "primary-container": "#1db954",
+                    "secondary-fixed-dim": "#c8c6c5",
+                    "on-primary-fixed-variant": "#005320",
+                    "primary-fixed": "#72fe8f",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "error": "#ffb4ab",
+                    "tertiary-fixed": "#e4e2e1",
+                    "secondary-container": "#4a4949",
+                    "on-primary": "#003914",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "on-primary-fixed": "#002108",
+                    "surface-container-lowest": "#0d0e0f",
+                    "surface-bright": "#38393a",
+                    "secondary": "#c8c6c5",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "primary-fixed-dim": "#53e076",
+                    "secondary-fixed": "#e5e2e1",
+                    "on-surface": "#e3e2e2",
+                    "error-container": "#93000a",
+                    "on-tertiary-container": "#383838",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "on-secondary": "#313030",
+                    "surface-container-high": "#292a2a",
+                    "surface-container-highest": "#343535",
+                    "inverse-surface": "#e3e2e2",
+                    "on-secondary-fixed-variant": "#474646",
+                    "inverse-primary": "#006e2d",
+                    "inverse-on-surface": "#2f3131",
+                    "surface-dim": "#121414",
+                    "surface": "#121414",
+                    "tertiary": "#c8c6c5",
+                    "on-tertiary": "#303030",
+                    "on-secondary-container": "#bab8b7",
+                    "on-error": "#690005",
+                    "on-error-container": "#ffdad6",
+                    "surface-container": "#1e2020",
+                    "surface-tint": "#53e076",
+                    "surface-container-low": "#1a1c1c",
+                    "outline": "#869585"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "topbar-height": "64px",
+                    "sidebar-width": "250px",
+                    "card-gap": "16px",
+                    "container-padding": "32px"
+            },
+            "fontFamily": {
+                    "body-md": ["Montserrat"],
+                    "label-md": ["Montserrat"],
+                    "headline-md": ["Montserrat"],
+                    "display-lg": ["Montserrat"],
+                    "headline-sm": ["Montserrat"],
+                    "body-lg": ["Montserrat"],
+                    "label-sm": ["Montserrat"],
+                    "headline-lg": ["Montserrat"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                    "headline-sm": ["18px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.03em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for deep dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0e0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #292a2a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38393a;
+        }
+    </style>
+</head>
+<body class="bg-[#000000] text-on-surface font-body-md min-h-screen antialiased flex">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-screen w-sidebar-width bg-surface-container-lowest dark:bg-surface-container-lowest flex flex-col py-container-padding z-40" style="box-shadow: none;">
+<div class="px-6 mb-8">
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary tracking-tight">AI Analytics</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Insight Dashboard</p>
+</div>
+<ul class="flex-1 flex flex-col w-full">
+<li class="px-3 mb-1">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+<span class="text-body-md font-body-md font-medium">Overview</span>
+</a>
+</li>
+<li class="px-3 mb-1">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[24px]">category</span>
+<span class="text-body-md font-body-md font-medium">Theme Classification</span>
+</a>
+</li>
+<li class="mb-1">
+<!-- Active State -->
+<a class="flex items-center gap-4 px-7 py-3 text-primary font-bold border-r-4 border-primary bg-surface-container-low transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span class="text-body-md font-body-md">Behavior Patterns</span>
+</a>
+</li>
+<li class="px-3 mb-1">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-secondary-fixed-dim hover:text-on-surface hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[24px]">format_quote</span>
+<span class="text-body-md font-body-md font-medium">Quote Extraction</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-sidebar-width flex flex-col min-h-screen relative">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 w-full h-topbar-height flex items-center justify-between px-gutter bg-background/70 backdrop-blur-md" style="box-shadow: none;">
+<div class="flex items-center gap-4 w-96 bg-surface-container rounded-full px-4 py-2 focus-within:ring-2 focus-within:ring-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+<input class="bg-transparent border-none outline-none text-body-md text-on-surface placeholder-on-surface-variant w-full focus:ring-0" placeholder="Search patterns..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="px-4 py-1.5 rounded-full border border-outline-variant text-label-md font-label-md text-on-surface hover:bg-surface-container-high transition-colors uppercase tracking-wider">
+                    Date Filter
+                </button>
+<div class="flex items-center gap-4 border-l border-surface-variant pl-6">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="User Profile" class="w-8 h-8 rounded-full object-cover cursor-pointer hover:ring-2 hover:ring-primary transition-all" data-alt="A professional studio headshot of a data analyst, softly illuminated with green rim lighting against a pitch black background, conveying a high-tech modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBItC1I1zv4zMHjkB4Uq_jaE-wWMqaN5XmZ2Ykd7sHMO8EtG9BmUmqltMw2XptjYNT-BWkhX3VGfDEjYQHe6Cob2Q5OYw-D2RG9_o6vtNfIkEneum4xnq8fFM_MriJsRAlvIo6QRRMriOf18PFsELT5dPlXIUBbBFhEIAKvIHHoWnjPa6YAIs_-mm2sF7wpcDuMFMmA_8pG4xG_Od7v8CgOQQJP8p4FA_QYw4z1gLf6fZMo_YS5MNwEbywpYfbqXu1F-GYfjSpCcB4"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<div class="p-container-padding max-w-7xl mx-auto w-full">
+<!-- Page Header -->
+<div class="mb-10">
+<h2 class="text-display-lg font-display-lg text-on-surface mb-2">Detected Behavior Patterns</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant">AI-driven analysis of user interaction shifts over the last 30 days.</p>
+</div>
+<!-- Vertical Feed of Cards -->
+<div class="flex flex-col gap-card-gap">
+<!-- Pattern Card 1 (High Impact - Green) -->
+<article class="bg-[#121212] rounded-lg p-6 flex flex-col md:flex-row gap-6 hover:bg-[#1a1a1a] transition-colors duration-200 group relative overflow-hidden">
+<!-- Subtle left border accent on hover -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex-1 flex gap-6">
+<div class="flex-shrink-0 w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[28px]">directions_run</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">Migration to Apple Music post-UI update</h3>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed max-w-3xl">
+                                Natural language analysis indicates a significant cohort of legacy users are expressing frustration with the new navigation paradigm. Sentiment scoring dropped 18% immediately following rollout, correlating with a 4% increase in explicit mentions of competing platforms in cancellation flow surveys.
+                            </p>
+<!-- Meta Tags -->
+<div class="flex items-center gap-3 mt-4">
+<span class="px-3 py-1 bg-surface-container rounded-full text-label-sm font-label-sm text-on-surface-variant border border-surface-variant">Confidence Score: 92%</span>
+<span class="px-3 py-1 bg-surface-container rounded-full text-label-sm font-label-sm text-primary border border-[#1DB954]/30">Impact Level: High</span>
+</div>
+</div>
+</div>
+<!-- Right Side: Trend / Sparkline -->
+<div class="w-full md:w-48 flex flex-col items-end justify-center border-t md:border-t-0 md:border-l border-surface-variant pt-4 md:pt-0 md:pl-6">
+<span class="text-label-md font-label-md text-on-surface-variant mb-2 uppercase tracking-wider">30-Day Trend</span>
+<div class="h-12 w-full flex items-end justify-between gap-1">
+<!-- Simulated Sparkline Bars -->
+<div class="w-full bg-[#1DB954] rounded-t-sm opacity-40" style="height: 20%"></div>
+<div class="w-full bg-[#1DB954] rounded-t-sm opacity-50" style="height: 35%"></div>
+<div class="w-full bg-[#1DB954] rounded-t-sm opacity-60" style="height: 40%"></div>
+<div class="w-full bg-[#1DB954] rounded-t-sm opacity-70" style="height: 60%"></div>
+<div class="w-full bg-[#1DB954] rounded-t-sm opacity-80" style="height: 85%"></div>
+<div class="w-full bg-[#1DB954] rounded-t-sm opacity-100" style="height: 100%"></div>
+</div>
+<span class="text-body-md font-body-md text-primary mt-2 font-bold">+12.4%</span>
+</div>
+</article>
+<!-- Pattern Card 2 (Medium Impact - Neutral/Reddish) -->
+<article class="bg-[#121212] rounded-lg p-6 flex flex-col md:flex-row gap-6 hover:bg-[#1a1a1a] transition-colors duration-200 group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex-1 flex gap-6">
+<div class="flex-shrink-0 w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center text-error group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[28px]">search_off</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">Discovery feature fatigue among Gen Z</h3>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed max-w-3xl">
+                                Interaction logs cross-referenced with user sentiment show a decline in engagement with the 'Weekly Discovery' module. Qualitative data suggests the algorithmic recommendations are feeling overly repetitive and less serendipitous, leading to active avoidance.
+                            </p>
+<!-- Meta Tags -->
+<div class="flex items-center gap-3 mt-4">
+<span class="px-3 py-1 bg-surface-container rounded-full text-label-sm font-label-sm text-on-surface-variant border border-surface-variant">Confidence Score: 78%</span>
+<span class="px-3 py-1 bg-surface-container rounded-full text-label-sm font-label-sm text-error border border-error/30">Impact Level: Medium</span>
+</div>
+</div>
+</div>
+<!-- Right Side: Trend / Sparkline -->
+<div class="w-full md:w-48 flex flex-col items-end justify-center border-t md:border-t-0 md:border-l border-surface-variant pt-4 md:pt-0 md:pl-6">
+<span class="text-label-md font-label-md text-on-surface-variant mb-2 uppercase tracking-wider">30-Day Trend</span>
+<div class="h-12 w-full flex items-end justify-between gap-1">
+<!-- Simulated Sparkline Bars (Descending) -->
+<div class="w-full bg-error rounded-t-sm opacity-100" style="height: 90%"></div>
+<div class="w-full bg-error rounded-t-sm opacity-80" style="height: 75%"></div>
+<div class="w-full bg-error rounded-t-sm opacity-70" style="height: 60%"></div>
+<div class="w-full bg-error rounded-t-sm opacity-60" style="height: 45%"></div>
+<div class="w-full bg-error rounded-t-sm opacity-50" style="height: 30%"></div>
+<div class="w-full bg-error rounded-t-sm opacity-40" style="height: 15%"></div>
+</div>
+<span class="text-body-md font-body-md text-error mt-2 font-bold">-8.2%</span>
+</div>
+</article>
+<!-- Pattern Card 3 (Low Impact - Grey) -->
+<article class="bg-[#121212] rounded-lg p-6 flex flex-col md:flex-row gap-6 hover:bg-[#1a1a1a] transition-colors duration-200 group relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary-container opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex-1 flex gap-6">
+<div class="flex-shrink-0 w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center text-tertiary-container group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[28px]">headset_mic</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">Increased utilization of lossless audio settings</h3>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed max-w-3xl">
+                                A slow but steady uptick in users manually enabling high-fidelity streaming options in the settings menu. This aligns with recent competitor marketing campaigns focusing on audio quality, suggesting a subtle shift in baseline user expectations.
+                            </p>
+<!-- Meta Tags -->
+<div class="flex items-center gap-3 mt-4">
+<span class="px-3 py-1 bg-surface-container rounded-full text-label-sm font-label-sm text-on-surface-variant border border-surface-variant">Confidence Score: 85%</span>
+<span class="px-3 py-1 bg-surface-container rounded-full text-label-sm font-label-sm text-tertiary-container border border-tertiary-container/30">Impact Level: Low</span>
+</div>
+</div>
+</div>
+<!-- Right Side: Trend / Sparkline -->
+<div class="w-full md:w-48 flex flex-col items-end justify-center border-t md:border-t-0 md:border-l border-surface-variant pt-4 md:pt-0 md:pl-6">
+<span class="text-label-md font-label-md text-on-surface-variant mb-2 uppercase tracking-wider">30-Day Trend</span>
+<div class="h-12 w-full flex items-end justify-between gap-1">
+<!-- Simulated Sparkline Bars (Stable/Slow Rise) -->
+<div class="w-full bg-tertiary-container rounded-t-sm opacity-50" style="height: 20%"></div>
+<div class="w-full bg-tertiary-container rounded-t-sm opacity-50" style="height: 22%"></div>
+<div class="w-full bg-tertiary-container rounded-t-sm opacity-60" style="height: 25%"></div>
+<div class="w-full bg-tertiary-container rounded-t-sm opacity-70" style="height: 28%"></div>
+<div class="w-full bg-tertiary-container rounded-t-sm opacity-80" style="height: 32%"></div>
+<div class="w-full bg-tertiary-container rounded-t-sm opacity-100" style="height: 35%"></div>
+</div>
+<span class="text-body-md font-body-md text-tertiary-container mt-2 font-bold">+2.1%</span>
+</div>
+</article>
+</div>
+</div>
+</main>
+</body></html>

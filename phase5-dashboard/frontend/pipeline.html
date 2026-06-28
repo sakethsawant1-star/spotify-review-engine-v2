@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pipeline Execution — Review Analytics</title>
+    <meta name="description" content="Animated pipeline execution status showing real-time progress of the AI review analysis engine." />
+    <link rel="stylesheet" href="index.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: auto;
+            padding: 32px;
+        }
+        .pipeline-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--color-surface);
+            border-radius: 12px;
+            padding: 48px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .pipeline-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .pipeline-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            animation: pulse-opacity 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .pipeline-back {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            background: none;
+            border: none;
+            font-family: var(--font-family);
+        }
+        .pipeline-back:hover {
+            color: var(--color-text-primary);
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+            position: relative;
+        }
+        .timeline-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            position: relative;
+            z-index: 10;
+        }
+        .timeline-connector {
+            position: absolute;
+            left: 23px;
+            top: 48px;
+            bottom: -48px;
+            width: 2px;
+            background: var(--color-surface-elevated);
+            z-index: 0;
+        }
+        .timeline-connector.done {
+            background: var(--color-primary);
+        }
+        .timeline-connector.active {
+            background: linear-gradient(to bottom, var(--color-primary) 50%, var(--color-surface-elevated) 50%);
+            background-size: 100% 200%;
+            animation: slide-gradient 2s linear infinite;
+        }
+        .step-icon {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+        .step-icon.done {
+            background-color: var(--color-primary);
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+        }
+        .step-icon.done .material-symbols-outlined {
+            color: #000;
+            font-weight: 700;
+        }
+        .step-icon.active {
+            background-color: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            animation: pulse-glow 2s infinite;
+        }
+        .step-icon.active .material-symbols-outlined {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+        .step-icon.pending {
+            background-color: var(--color-surface);
+            border: 2px solid #3E3E3E;
+        }
+        .step-icon.pending .material-symbols-outlined {
+            color: var(--color-text-tertiary);
+        }
+        .step-content {
+            flex: 1;
+            padding-top: 4px;
+        }
+        .step-content h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+        .step-content p {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+        .step-content.active h3 {
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .step-content.pending {
+            opacity: 0.5;
+        }
+        .step-content.pending h3 {
+            color: var(--color-text-tertiary);
+        }
+        .step-content.pending p {
+            color: #4d4d4d;
+        }
+
+        /* Active Badge */
+        .active-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            background-color: var(--color-primary);
+            color: #000;
+        }
+
+        /* Terminal Console */
+        .terminal {
+            background-color: #0A0A0A;
+            border: 1px solid var(--color-surface-elevated);
+            border-radius: 6px;
+            padding: 16px;
+            height: 128px;
+            overflow: hidden;
+            position: relative;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 16px;
+        }
+        .terminal-content {
+            display: flex;
+            flex-direction: column;
+            color: var(--color-primary);
+            opacity: 0.8;
+        }
+        .terminal-content p {
+            margin-bottom: 4px;
+            color: var(--color-primary);
+            font-size: 12px;
+        }
+        .terminal-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 32px;
+            background: linear-gradient(to top, #0A0A0A, transparent);
+        }
+
+        /* Active Step Layout */
+        .active-step-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Spinner */
+        .spinner {
+            animation: spin 1s linear infinite;
+            position: absolute;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Background Glow */
+        .bg-glow {
+            position: absolute;
+            top: -128px;
+            right: -128px;
+            width: 384px;
+            height: 384px;
+            background-color: var(--color-primary);
+            border-radius: 50%;
+            opacity: 0.03;
+            filter: blur(64px);
+            pointer-events: none;
+        }
+
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(29, 185, 84, 0.4); }
+            50% { box-shadow: 0 0 20px rgba(29, 185, 84, 0.8); }
+        }
+
+        @keyframes slide-gradient {
+            0% { background-position: 100% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<main class="pipeline-container">
+    <button class="pipeline-back" onclick="window.location.href='index.html'">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Back to Dashboard
+    </button>
+
+    <header class="pipeline-header">
+        <h1>Analyzing Review Data...</h1>
+    </header>
+
+    <div class="timeline">
+        <!-- Step 1: Data Collection (DONE) -->
+        <div class="timeline-step">
+            <div class="timeline-connector done"></div>
+            <div class="step-icon done">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+            </div>
+            <div class="step-content">
+                <h3>Data Collection (Scraping)</h3>
+                <p>Gathering reviews from Google Play, App Store, Reddit, and Spotify Community.</p>
+            </div>
+        </div>
+
+        <!-- Step 2: Data Pipeline (DONE) -->
+        <div class="timeline-step">
+            <div class="timeline-connector active"></div>
+            <div class="step-icon done">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check</span>
+            </div>
+            <div class="step-content">
+                <h3>Data Pipeline (Cleaning & Storage)</h3>
+                <p>Normalizing text, removing PII (Personal Identifiable Information), and deduplicating records into the database.</p>
+            </div>
+        </div>
+
+        <!-- Step 3: LLM Analysis Agent (ACTIVE) -->
+        <div class="timeline-step">
+            <div class="timeline-connector"></div>
+            <div class="step-icon active">
+                <svg class="spinner" style="width:48px; height:48px;" fill="none" viewBox="0 0 24 24">
+                    <circle style="opacity:0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path style="opacity:0.75;" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+                </svg>
+                <span class="material-symbols-outlined">psychology</span>
+            </div>
+            <div class="step-content active">
+                <div class="active-step-grid">
+                    <div>
+                        <h3>
+                            LLM Analysis Agent
+                            <span class="active-badge">ACTIVE</span>
+                        </h3>
+                        <p>Running 4-class sentiment analysis, classifying 7 core themes, and extracting key user quotes.</p>
+                    </div>
+                    <div class="terminal">
+                        <div class="terminal-content" id="terminal-logs">
+                            <p>> Initializing models... [OK]</p>
+                            <p>> Loading dataset (6,083 records)... [OK]</p>
+                            <p>> Starting batch inference...</p>
+                            <p>> Classifying sentiment for review #1449... [OK]</p>
+                            <p>> Classifying sentiment for review #1450... [OK]</p>
+                            <p>> Extracting themes for batch A... [OK]</p>
+                            <p>> Classifying sentiment for review #1451... [OK]</p>
+                            <p>> Classifying sentiment for review #1452... [PROCESSING]</p>
+                        </div>
+                        <div class="terminal-fade"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Insight Generation (PENDING) -->
+        <div class="timeline-step">
+            <div class="step-icon pending">
+                <span class="material-symbols-outlined">insert_chart</span>
+            </div>
+            <div class="step-content pending">
+                <h3>Insight Generation (Output)</h3>
+                <p>Detecting behavior patterns and formatting actionable insights for the dashboard.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-glow"></div>
+</main>
+
+<script>
+    // Trigger actual pipeline execution in backend
+    fetch('/api/pipeline/run', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => console.log('Pipeline started:', data))
+        .catch(err => console.error('Failed to run pipeline', err));
+
+    const terminalLogs = document.getElementById('terminal-logs');
+    
+    // Clear mock logs immediately
+    terminalLogs.innerHTML = '<p>> Initiating connection to backend...</p>';
+
+    // Poll the backend logs every 1.5 seconds
+    const logInterval = setInterval(() => {
+        fetch('/api/pipeline/logs')
+            .then(res => res.json())
+            .then(data => {
+                if (data.logs && data.logs.length > 0) {
+                    terminalLogs.innerHTML = '';
+                    let isComplete = false;
+                    
+                    data.logs.forEach(logLine => {
+                        const p = document.createElement('p');
+                        p.innerText = logLine;
+                        terminalLogs.appendChild(p);
+                        
+                        if (logLine.includes('PIPELINE_COMPLETE')) {
+                            isComplete = true;
+                        }
+                    });
+                    
+                    // Auto-scroll
+                    terminalLogs.scrollTop = terminalLogs.scrollHeight;
+                    
+                    // Redirect back to dashboard upon completion
+                    if (isComplete) {
+                        clearInterval(logInterval);
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    }
+                }
+            })
+            .catch(err => console.error('Failed to fetch logs', err));
+    }, 1500);
+</script>
+</body>
+</html>

@@ -15,7 +15,7 @@ spacy==3.8.4
 langdetect==1.0.9
 
 # --- LLM Analysis (Phase 4) ---
-groq==0.11.0
+groq==1.5.0
 
 # --- Database (PostgreSQL) ---
 psycopg2-binary==2.9.10

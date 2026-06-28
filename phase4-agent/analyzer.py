@@ -311,7 +311,9 @@ def run_analysis(run_id: str = None, dry_run: bool = False, clear: bool = False,
         # Load raw reviews count for metrics
         db = DatabaseManager()
         with db.connection() as conn:
-            total_raw = conn.cursor().execute("SELECT COUNT(*) FROM raw_reviews").fetchone()[0]
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) FROM raw_reviews")
+            total_raw = cursor.fetchone()[0]
         print(f"  [✓] Current total raw reviews in DB: {total_raw}")
         print()
 

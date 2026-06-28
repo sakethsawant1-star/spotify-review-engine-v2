@@ -2,7 +2,6 @@
   "version": 2,
   "name": "review-discovery-dashboard",
   "buildCommand": "echo 'No build step required'",
-  "outputDirectory": "phase5-dashboard/frontend",
   "rewrites": [
     {
       "source": "/api/(.*)",

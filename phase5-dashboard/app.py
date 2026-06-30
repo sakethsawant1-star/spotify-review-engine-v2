@@ -115,13 +115,13 @@ def run_full_pipeline_task():
             f.write("\n> Step 2: Running Data Processing...\n")
             f.flush()
             pipeline_path = project_root / "phase3-pipeline" / "run_pipeline.py"
-            subprocess.run([sys.executable, "-u", str(pipeline_path), "--clear"], stdout=f, stderr=subprocess.STDOUT, cwd=str(project_root / "phase3-pipeline"), check=True)
+            subprocess.run([sys.executable, "-u", str(pipeline_path), "--limit", "50"], stdout=f, stderr=subprocess.STDOUT, cwd=str(project_root / "phase3-pipeline"), check=True)
             
             # Step 3: Run LLM Analyzer
             f.write("\n> Step 3: Running LLM Analysis...\n")
             f.flush()
             analyzer_path = project_root / "phase4-agent" / "analyzer.py"
-            subprocess.run([sys.executable, "-u", str(analyzer_path), "--clear"], stdout=f, stderr=subprocess.STDOUT, cwd=str(project_root / "phase4-agent"), check=True)
+            subprocess.run([sys.executable, "-u", str(analyzer_path), "--limit", "50"], stdout=f, stderr=subprocess.STDOUT, cwd=str(project_root / "phase4-agent"), check=True)
             
             f.write("\n> PIPELINE_COMPLETE\n")
     except Exception as e:

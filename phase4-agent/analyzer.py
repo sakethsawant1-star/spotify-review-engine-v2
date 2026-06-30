@@ -1,9 +1,11 @@
 """
 analyzer.py — Main orchestrator for Phase 4 LLM Analysis Agent.
 =============================================================
-Loads processed reviews from SQLite database, runs theme & sentiment classification,
-extracts representative quotes per theme, detects behavior patterns across the corpus,
-and updates SQLite database with final analysis results and pipeline run stats.
+Refactored to use the unified 2-pass SpotifyReviewAgent (adopted from M3
+Groww agent architecture). Replaces the previous 3-module approach
+(theme_sentiment_classifier + quote_extractor + pattern_detector) with
+a single agent that does classification + quote extraction in Pass 1 and
+synthesis + pattern detection in Pass 2.
 
 Usage:
   python analyzer.py                     # Run analysis on all processed reviews
@@ -29,11 +31,9 @@ sys.path.insert(0, str(PROJECT_ROOT / "phase1-setup"))
 import config
 from db import DatabaseManager
 
-# Import Phase 4 modules
+# Import Phase 4 unified agent
 sys.path.insert(0, str(PROJECT_ROOT / "phase4-agent"))
-from theme_sentiment_classifier import ThemeSentimentClassifier
-from quote_extractor import QuoteExtractor
-from pattern_detector import PatternDetector
+from gemini_agent import SpotifyReviewAgent
 
 # Fix Windows terminal encoding for Unicode output
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
@@ -134,51 +134,17 @@ def clear_analysis_data():
     logger.info("Cleared analysis_results table.")
 
 
-def get_combined_reviews_data() -> List[Dict[str, Any]]:
-    """Fetches combined data from processed_reviews and analysis_results."""
-    db = DatabaseManager()
-    with db.connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute(
-            """
-            SELECT p.*, a.theme_ids, a.sentiment
-            FROM processed_reviews p
-            JOIN analysis_results a ON p.id = a.review_id
-            """
-        )
-        rows = cursor.fetchall()
-
-    reviews = []
-    for r in rows:
-        if isinstance(r, tuple):
-            reviews.append({
-                "id": r[0], "source": r[1], "rating": r[2], "text": r[3],
-                "date": r[4], "engagement_score": r[7],
-                "theme_ids": r[9] if isinstance(r[9], str) else json.dumps(r[9] or []),
-                "sentiment": r[10] if len(r) > 10 else r[9]
-            })
-        else:
-            reviews.append({
-                "id": r["id"], "source": r["source"], "rating": r["rating"],
-                "text": r["text"], "date": r["date"],
-                "engagement_score": r["engagement_score"],
-                "theme_ids": r["theme_ids"],
-                "sentiment": r["sentiment"]
-            })
-    return reviews
-
-
-def calculate_aggregates(reviews: List[Dict[str, Any]]) -> tuple[Dict[str, Any], Dict[str, Any]]:
-    """Calculates theme and sentiment distributions."""
-    total = len(reviews)
+def calculate_aggregates(classification_results: List[Dict[str, Any]]) -> tuple[Dict[str, Any], Dict[str, Any]]:
+    """Calculates theme and sentiment distributions from classification results."""
+    total = len(classification_results)
     if total == 0:
         return {}, {}
 
     theme_counts = {tid: 0 for tid in config.THEME_TAXONOMY.keys()}
     sentiment_counts = {sent: 0 for sent in config.SENTIMENT_CLASSES}
 
-    for r in reviews:
-        # Theme IDs is a JSON array string in DB
+    for r in classification_results:
+        # Theme IDs is a JSON array string
         tids = json.loads(r["theme_ids"] or "[]")
         for tid in tids:
             if tid in theme_counts:
@@ -274,7 +240,7 @@ def update_pipeline_run(
 
 
 def run_analysis(run_id: str = None, dry_run: bool = False, clear: bool = False, limit: int = None) -> Dict[str, Any]:
-    """Runs the full Phase 4 analysis pipeline."""
+    """Runs the full Phase 4 analysis pipeline using the unified 2-pass agent."""
     start_time = time.time()
     started_at = datetime.now().isoformat()
 
@@ -291,7 +257,7 @@ def run_analysis(run_id: str = None, dry_run: bool = False, clear: bool = False,
 
     print()
     print("=" * 60)
-    print("  🤖 Phase 4 — LLM Analysis Agent")
+    print("  🤖 Phase 4 — LLM Analysis Agent (Refactored 2-Pass)")
     print("=" * 60)
     print()
 
@@ -307,7 +273,7 @@ def run_analysis(run_id: str = None, dry_run: bool = False, clear: bool = False,
         processed_reviews = load_processed_reviews()
         total_processed = len(processed_reviews)
         print(f"  [✓] Loaded {total_processed} processed reviews")
-        
+
         # Load raw reviews count for metrics
         db = DatabaseManager()
         with db.connection() as conn:
@@ -321,100 +287,83 @@ def run_analysis(run_id: str = None, dry_run: bool = False, clear: bool = False,
             print("  [!] No processed reviews found. Run Phase 3 pipeline first.")
             return {"status": "no_data"}
 
-        # 2. Theme and Sentiment Classification in Batches
-        print("  ⏳ Initializing classifier...")
-        classifier = ThemeSentimentClassifier()
-        
-        # Fetch IDs of already analyzed reviews to resume where we left off
+        # Filter out already analyzed reviews (resume support)
         with db.connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT review_id FROM analysis_results")
             analyzed_ids = {row[0] for row in cursor.fetchall()}
 
-        # Filter out already analyzed reviews
         unprocessed_reviews = [r for r in processed_reviews if r["id"] not in analyzed_ids]
-        print(f"  [!] Found {len(analyzed_ids)} already analyzed reviews. {len(unprocessed_reviews)} remaining to analyze.")
+        print(f"  [!] Found {len(analyzed_ids)} already analyzed reviews. "
+              f"{len(unprocessed_reviews)} remaining to analyze.")
 
         if limit:
             reviews_to_analyze = unprocessed_reviews[:limit]
             print(f"  [!] Limiting analysis to {limit} reviews as requested.")
         else:
             reviews_to_analyze = unprocessed_reviews
-        
+
         total_to_analyze = len(reviews_to_analyze)
-        print(f"  ⏳ Analyzing {total_to_analyze} reviews using Groq (batch size = {config.BATCH_SIZE})...")
 
-        analysis_results = []
-        batch_size = config.BATCH_SIZE
-        
-        for i in range(0, total_to_analyze, batch_size):
-            batch = reviews_to_analyze[i:i + batch_size]
-            print(f"     Processing batch {i//batch_size + 1} / {-(-total_to_analyze//batch_size)}...")
-            batch_results = classifier.classify_batch(batch)
-            analysis_results.extend(batch_results)
-
-        print(f"  [✓] Completed classification for {len(analysis_results)} reviews")
-        print()
-
-        # Save classification results
-        if not dry_run:
-            print("  💾 Saving classification results to database...")
-            saved = save_analysis_results(analysis_results)
-            print(f"  [✓] Saved {saved} analysis records")
-            print()
+        if total_to_analyze == 0:
+            print("  [!] All reviews already analyzed. Skipping to aggregation.")
         else:
-            print("  [DRY RUN] Skipping database save of classification results")
-            print()
+            # 2. Run the unified 2-pass agent
+            print(f"\n  ⏳ Initializing unified agent (batch_size={config.BATCH_SIZE})...")
+            agent = SpotifyReviewAgent()
+            agent_result = agent.analyze_reviews(reviews_to_analyze, batch_size=config.BATCH_SIZE)
 
-        # 3. Aggregate results and get combined data
+            # 3. Save classification results
+            classification_results = agent_result["classification_results"]
+
+            if not dry_run:
+                print("  💾 Saving classification results to database...")
+                saved = save_analysis_results(classification_results)
+                print(f"  [✓] Saved {saved} analysis records")
+                print()
+            else:
+                print("  [DRY RUN] Skipping database save of classification results")
+                print()
+
+        # 4. Calculate aggregates from ALL classification results (including previously analyzed)
         print("  ⏳ Calculating aggregates...")
-        if dry_run:
-            # Reconstruct combined data in-memory for dry run
-            combined_reviews = []
-            results_map = {res["review_id"]: res for res in analysis_results}
-            for pr in processed_reviews:
-                rid = pr["id"]
-                if rid in results_map:
-                    combined_reviews.append({
-                        **pr,
-                        "theme_ids": results_map[rid]["theme_ids"],
-                        "sentiment": results_map[rid]["sentiment"]
-                    })
-        else:
-            combined_reviews = get_combined_reviews_data()
 
-        themes_summary, sentiment_summary = calculate_aggregates(combined_reviews)
+        if dry_run and total_to_analyze > 0:
+            # Use in-memory results for dry run
+            all_classification = classification_results
+        else:
+            # Query all results from DB
+            with db.connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT review_id, theme_ids, sentiment FROM analysis_results")
+                rows = cursor.fetchall()
+            all_classification = []
+            for row in rows:
+                if isinstance(row, tuple):
+                    all_classification.append({
+                        "review_id": row[0],
+                        "theme_ids": row[1] if isinstance(row[1], str) else json.dumps(row[1] or []),
+                        "sentiment": row[2],
+                    })
+                else:
+                    all_classification.append({
+                        "review_id": row["review_id"],
+                        "theme_ids": row["theme_ids"] if isinstance(row["theme_ids"], str) else json.dumps(row["theme_ids"] or []),
+                        "sentiment": row["sentiment"],
+                    })
+
+        themes_summary, sentiment_summary = calculate_aggregates(all_classification)
         print("  [✓] Frequencies and distributions calculated")
         print()
 
-        # 4. Extract quotes for each theme (7 calls total)
-        print("  ⏳ Initializing quote extractor...")
-        quote_extractor = QuoteExtractor()
-        top_quotes = {}
-
-        for theme_id in config.THEME_TAXONOMY.keys():
-            # Filter reviews matching this theme
-            theme_reviews = []
-            for r in combined_reviews:
-                tids = json.loads(r["theme_ids"] or "[]")
-                if theme_id in tids:
-                    theme_reviews.append(r)
-            
-            if theme_reviews:
-                quotes = quote_extractor.extract_quotes_for_theme(theme_id, theme_reviews)
-                top_quotes[theme_id] = quotes
-            else:
-                top_quotes[theme_id] = []
-
-        print("  [✓] Quote extraction complete")
-        print()
-
-        # 5. Detect cross-corpus behavior patterns (1 call)
-        print("  ⏳ Initializing pattern detector...")
-        pattern_detector = PatternDetector()
-        behavior_patterns = pattern_detector.detect_patterns(combined_reviews)
-        print("  [✓] Behavior pattern synthesis complete")
-        print()
+        # 5. Get top_quotes and behavior_patterns from agent synthesis
+        if total_to_analyze > 0:
+            top_quotes = agent_result["top_quotes"]
+            behavior_patterns = agent_result["behavior_patterns"]
+        else:
+            # If no new reviews, use empty defaults
+            top_quotes = {}
+            behavior_patterns = {"patterns": [], "executive_summary": "No new reviews to analyze."}
 
         # 6. Save pipeline run
         if not dry_run:
@@ -439,7 +388,7 @@ def run_analysis(run_id: str = None, dry_run: bool = False, clear: bool = False,
 
         # 7. Print Dashboard Summary
         total_time = round(time.time() - start_time, 2)
-        
+
         print("─" * 60)
         print("  📊 LLM Analysis Dashboard")
         print("─" * 60)
@@ -458,7 +407,8 @@ def run_analysis(run_id: str = None, dry_run: bool = False, clear: bool = False,
         print("  ──────────────────────────────────")
         print("  Behavior Patterns Detected:")
         for pat in behavior_patterns.get("patterns", []):
-            print(f"    - [{pat.get('category').upper()}] {pat.get('title')} (Severity: {pat.get('severity').upper()})")
+            print(f"    - [{pat.get('category', 'unknown').upper()}] {pat.get('title', 'Unnamed')} "
+                  f"(Severity: {pat.get('severity', 'unknown').upper()})")
         print("─" * 60)
         print("  ✅ Phase 4 analysis complete!")
         print("=" * 60)

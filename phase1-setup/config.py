@@ -41,28 +41,22 @@ USE_POSTGRES = os.getenv("USE_POSTGRES", "false").lower() in ("true", "1", "yes"
 DATA_DIR = PROJECT_ROOT / "data"
 DB_PATH = DATA_DIR / "database.sqlite"
 LEXICON_PATH = DATA_DIR / "lexicon" / "discovery_keywords.json"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # ──────────────────────────────────────────────
-# 4. LLM Configuration (Groq)
+# 4. LLM API Constants (Gemini)
 # ──────────────────────────────────────────────
+LLM_PRIMARY_MODEL = os.getenv("LLM_PRIMARY_MODEL", "gemini-2.5-flash")
+LLM_MAX_TOKENS = 8192
+LLM_TEMPERATURE = 0.2
 
-# Primary model — Llama 3.1 8B (swapped due to Mixtral decommission)
-LLM_PRIMARY_MODEL = "llama-3.1-8b-instant"
-
-# Secondary model — faster, for simpler tasks
-LLM_SECONDARY_MODEL = "llama-3.3-70b-versatile"
-
-# Rate limits (Groq Developer plan / Free Tier adjustment)
-GROQ_RATE_LIMIT_RPM = 30             # requests per minute
-GROQ_RATE_LIMIT_TPM = 6_000          # tokens per minute (strict free tier limit)
-GROQ_CONTEXT_WINDOW = 131_072        # context window tokens
-GROQ_MAX_COMPLETION = 32_768         # max completion tokens
-GROQ_REQUEST_DELAY = 15.0            # seconds between requests to respect TPM limits
+# Gemini free tier limits: 15 RPM, 1,000,000 TPM
+LLM_RATE_LIMIT_RPM = 15
+LLM_RATE_LIMIT_TPM = 1_000_000
+LLM_REQUEST_DELAY = 4.0               # 4s spacing (15 requests per 60s)
 
 # Batch processing
-BATCH_SIZE = int(os.getenv("BATCH_SIZE", "10"))
-LLM_TEMPERATURE = 0.2                # Low temperature for consistent classification
-LLM_MAX_TOKENS = 1200                # Max tokens per completion (prevents TPM overallocation)
+BATCH_SIZE = int(os.getenv("BATCH_SIZE", "25"))
 
 # ──────────────────────────────────────────────
 # 5. Theme Taxonomy (T1–T7)

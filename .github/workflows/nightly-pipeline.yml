@@ -26,6 +26,14 @@ jobs:
         pip install -r requirements.txt
         python -m spacy download en_core_web_sm
         
+    - name: Initialize Database (Phase 1)
+      env:
+        USE_POSTGRES: "true"
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: |
+        cd phase1-setup
+        python -c "from db import DatabaseManager; DatabaseManager().initialize()"
+        
     - name: Run Scrapers (Phase 2)
       env:
         USE_POSTGRES: "true"

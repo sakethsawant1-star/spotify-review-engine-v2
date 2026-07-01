@@ -100,9 +100,9 @@ REDDIT_SUBREDDITS = [
 
 # Review count targets per source
 SCRAPER_TARGETS = {
-    "play_store": 100,
-    "app_store": 100,
-    "reddit": 20,       # quality over quantity for Reddit
+    "play_store": 3000,
+    "app_store": 2000,
+    "reddit": 150,       # quality over quantity for Reddit
     "community": 10,     # Stretch goal
 }
 

@@ -23,16 +23,15 @@ from contextlib import contextmanager
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import config
 
-# Conditionally import psycopg2
+# Always try to import psycopg2 so it's available when needed
 _psycopg2 = None
-if config.USE_POSTGRES:
-    try:
-        import psycopg2
-        import psycopg2.extras
-        _psycopg2 = psycopg2
-    except ImportError:
-        print("[!] psycopg2 not installed. Run: pip install psycopg2-binary")
-        print("    Falling back to SQLite.")
+try:
+    import psycopg2
+    import psycopg2.extras
+    _psycopg2 = psycopg2
+except ImportError as e:
+    if config.USE_POSTGRES:
+        raise RuntimeError(f"FATAL: USE_POSTGRES is true but psycopg2 failed to import: {e}")
 
 
 # ──────────────────────────────────────────────

@@ -26,23 +26,20 @@ jobs:
         pip install -r requirements.txt
         python -m spacy download en_core_web_sm
 
-    - name: Create .env file
+    - name: Setup Environment Variables
       run: |
-        cat <<EOF > .env
-        DATABASE_URL=${{ secrets.DATABASE_URL }}
-        USE_POSTGRES=true
-        GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
-        REDDIT_CLIENT_ID=${{ secrets.REDDIT_CLIENT_ID }}
-        REDDIT_CLIENT_SECRET=${{ secrets.REDDIT_CLIENT_SECRET }}
-        REDDIT_USER_AGENT=${{ secrets.REDDIT_USER_AGENT }}
-        BATCH_SIZE=35
-        EOF
-        echo "Created .env file successfully"
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+        echo "USE_POSTGRES=true" >> $GITHUB_ENV
+        echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> $GITHUB_ENV
+        echo "REDDIT_CLIENT_ID=${{ secrets.REDDIT_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "REDDIT_CLIENT_SECRET=${{ secrets.REDDIT_CLIENT_SECRET }}" >> $GITHUB_ENV
+        echo "REDDIT_USER_AGENT=${{ secrets.REDDIT_USER_AGENT }}" >> $GITHUB_ENV
+        echo "BATCH_SIZE=35" >> $GITHUB_ENV
         
     - name: Initialize Database (Phase 1)
       run: |
         cd phase1-setup
-        python -c "from db import DatabaseManager; db = DatabaseManager(); print(f'USE_POSTGRES={db.use_postgres}'); db.initialize(); print('Database initialized successfully')"
+        python -c "import config; print(f'CONFIG POSTGRES: {config.USE_POSTGRES}'); from db import DatabaseManager; db = DatabaseManager(); print(f'DB POSTGRES: {db.use_postgres}'); db.initialize(); print('Database initialized successfully')"
         
     - name: Run Scrapers (Phase 2)
       run: |

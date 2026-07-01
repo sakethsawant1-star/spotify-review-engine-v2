@@ -14,10 +14,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Enable IPv6 on Runner
-      uses: steebchen/ipv6-action@v2
-
-      
     - name: Set up Python
       uses: actions/setup-python@v5
       with:

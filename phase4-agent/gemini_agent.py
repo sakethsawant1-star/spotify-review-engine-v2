@@ -69,7 +69,7 @@ class SpotifyReviewAgent:
         with open(path, "r", encoding="utf-8") as f:
             return f.read().strip()
 
-    def _call_gemini(self, system_prompt: str, user_content: str, retries: int = 3) -> dict:
+    def _call_gemini(self, system_prompt: str, user_content: str, retries: int = 8) -> dict:
         """
         Make a rate-limited Gemini API call with retries.
         """
@@ -100,6 +100,7 @@ class SpotifyReviewAgent:
             except Exception as e:
                 err_str = str(e).upper()
                 is_rate_limit = "429" in err_str or "RESOURCE_EXHAUSTED" in err_str or "QUOTA" in err_str
+                is_503 = "503" in err_str or "UNAVAILABLE" in err_str or "OVERLOADED" in err_str
                 
                 if is_rate_limit:
                     wait_time = 60
@@ -112,6 +113,15 @@ class SpotifyReviewAgent:
                     time.sleep(wait_time)
                     # Do not increment attempt, just try again
                     continue
+                elif is_503:
+                    if attempt == retries:
+                        logger.error(f"Gemini API failed after {retries} attempts. Last error: {e}")
+                        raise
+                    # Exponential backoff for 503
+                    wait_time = 10 * (2 ** (attempt - 1))
+                    logger.warning(f"Gemini API call failed (attempt {attempt}/{retries}): 503 UNAVAILABLE. Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                    attempt += 1
                 else:
                     if attempt == retries:
                         logger.error(f"Gemini API failed after {retries} attempts. Last error: {e}")

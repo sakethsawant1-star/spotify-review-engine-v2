@@ -3,120 +3,52 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Behavior Patterns — Review Analytics</title>
-    <meta name="description" content="AI-driven detection of user behavior patterns around music discovery on Spotify." />
+    <title>Executive Summary — Review Analytics</title>
+    <meta name="description" content="AI-Powered Executive Summary." />
     <link rel="stylesheet" href="index.css" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <style>
-        .bp-card {
+        .summary-card {
             background-color: var(--color-surface);
             border-radius: 8px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            position: relative;
-            overflow: hidden;
-            transition: background-color 0.2s ease;
-            cursor: pointer;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .bp-card:hover {
-            background-color: var(--color-surface-hover);
-        }
-        .bp-card .accent-bar {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-        .bp-card:hover .accent-bar {
-            opacity: 1;
-        }
-        .bp-card-inner {
-            display: flex;
-            gap: 24px;
-        }
-        .bp-icon {
-            flex-shrink: 0;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: var(--color-surface-elevated);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease;
-        }
-        .bp-card:hover .bp-icon {
-            transform: scale(1.1);
-        }
-        .bp-title {
+        .summary-title {
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            color: var(--color-text-primary);
         }
-        .bp-desc {
-            font-size: 14px;
+        .summary-text {
+            font-size: 16px;
             color: var(--color-text-secondary);
-            line-height: 1.65;
-            max-width: 700px;
+            line-height: 1.6;
         }
-        .bp-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .summary-highlight {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+        .summary-negative {
+            color: #ffb4ab;
+            font-weight: 700;
+        }
+        .quote-box {
+            background-color: var(--color-surface-hover);
+            border-left: 4px solid var(--color-primary);
+            padding: 24px;
+            border-radius: 4px;
+            font-style: italic;
             margin-top: 16px;
         }
-        .bp-trend {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: center;
-            padding-left: 24px;
-            border-left: 1px solid var(--color-surface-highest);
-            min-width: 160px;
-        }
-        .bp-trend-label {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--color-text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
-        }
-        .bp-sparkline {
-            height: 48px;
-            width: 100%;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 4px;
-        }
-        .bp-sparkline .spark-bar {
-            width: 100%;
-            border-radius: 2px 2px 0 0;
-        }
-        .bp-trend-change {
+        .quote-author {
+            display: block;
+            margin-top: 12px;
             font-size: 14px;
             font-weight: 700;
-            margin-top: 8px;
-        }
-        .page-header {
-            margin-bottom: 40px;
-        }
-        .page-header h2 {
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            margin-bottom: 8px;
-        }
-        .page-header p {
-            font-size: 16px;
+            font-style: normal;
             color: var(--color-text-muted);
         }
     </style>
@@ -125,7 +57,7 @@
 <div class="app-layout">
 
     <!-- ===== SIDEBAR ===== -->
-    <nav class="sidebar">
+    <nav class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="sidebar-brand-icon">
                 <svg viewBox="0 0 24 24" fill="#1DB954" xmlns="http://www.w3.org/2000/svg">
@@ -147,7 +79,7 @@
                 <span class="material-symbols-outlined">category</span>
                 <span>Theme Classification</span>
             </a></li>
-            <li><a href="behavior-patterns.html" class="active">
+            <li><a href="behavior-patterns.html">
                 <span class="material-symbols-outlined">psychology</span>
                 <span>Behavior Patterns</span>
             </a></li>
@@ -177,23 +109,42 @@
             </div>
         </header>
 
-        <div class="page-content">
-            <div class="page-header">
-                <h2>Detected Behavior Patterns</h2>
-                <p>AI-driven analysis of user interaction shifts over the last 30 days.</p>
+        <div class="page-content" style="max-width: 900px; margin: 0 auto;">
+            
+            <div class="page-header" style="margin-bottom: 32px;">
+                <h2 style="font-size: 32px; font-weight: 700;">Executive Summary</h2>
+                <p style="color: var(--color-text-muted);">AI-synthesized narrative of the latest pipeline insights.</p>
             </div>
 
-            <div id="patterns-container" style="display: flex; flex-direction: column; gap: var(--card-gap);">
-                <!-- Patterns will be dynamically populated from API data -->
-                <div style="text-align: center; color: var(--color-text-muted); padding: 40px;">
-                    <span class="material-symbols-outlined" style="font-size: 48px; display: block; margin-bottom: 12px;">hourglass_empty</span>
-                    Loading behavior patterns from pipeline...
+            <div class="summary-card">
+                <h3 class="summary-title" style="display: flex; align-items: center; gap: 8px;">
+                    <span class="material-symbols-outlined" style="color: var(--color-primary);">smart_toy</span>
+                    AI Executive Summary
+                </h3>
+                <div id="llm-executive-summary" class="summary-text" style="white-space: pre-line;">
+                    <div style="display: flex; align-items: center; gap: 10px; color: var(--color-text-muted);">
+                        <div class="spinner" style="width: 20px; height: 20px; border: 2px solid var(--color-surface-hover); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                        Synthesizing pipeline data...
+                    </div>
                 </div>
             </div>
+
+            <!-- The Voice of the User -->
+            <div class="summary-card">
+                <h3 class="summary-title">The Voice of the User</h3>
+                <p class="summary-text">The following quote best encapsulates the core sentiment of the frustrated segment:</p>
+                <div id="summary-quote-box" class="quote-box">
+                    Loading quote...
+                </div>
+            </div>
+
         </div>
     </main>
 </div>
 
+<style>
+@keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
 <script src="app.js"></script>
 </body>
 </html>

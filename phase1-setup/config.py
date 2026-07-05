@@ -70,6 +70,12 @@ THEME_TAXONOMY = {
     "T5": "UI Navigation",
     "T6": "Audio Quality & Playback",
     "T7": "Ads & Premium Friction",
+    "T8": "Algorithm Staleness",
+    "T9": "Genre Bubble",
+    "T10": "Skip Fatigue",
+    "T11": "Context Mismatch",
+    "T12": "Playlist Decay",
+    "T13": "Exploration Fatigue",
 }
 
 # ──────────────────────────────────────────────

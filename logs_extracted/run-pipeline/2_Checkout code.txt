@@ -1,0 +1,73 @@
+﻿2026-06-30T13:55:45.1230344Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-30T13:55:45.1239436Z ##[group]Run actions/checkout@v4
+2026-06-30T13:55:45.1240186Z with:
+2026-06-30T13:55:45.1240766Z   repository: sakethsawant1-star/spotify-review-engine-v2
+2026-06-30T13:55:45.1245352Z   token: ***
+2026-06-30T13:55:45.1245809Z   ssh-strict: true
+2026-06-30T13:55:45.1246630Z   ssh-user: git
+2026-06-30T13:55:45.1247183Z   persist-credentials: true
+2026-06-30T13:55:45.1247708Z   clean: true
+2026-06-30T13:55:45.1248190Z   sparse-checkout-cone-mode: true
+2026-06-30T13:55:45.1248728Z   fetch-depth: 1
+2026-06-30T13:55:45.1249190Z   fetch-tags: false
+2026-06-30T13:55:45.1249674Z   show-progress: true
+2026-06-30T13:55:45.1250140Z   lfs: false
+2026-06-30T13:55:45.1250591Z   submodules: false
+2026-06-30T13:55:45.1251107Z   set-safe-directory: true
+2026-06-30T13:55:45.1251876Z ##[endgroup]
+2026-06-30T13:55:45.2340058Z Syncing repository: sakethsawant1-star/spotify-review-engine-v2
+2026-06-30T13:55:45.2345050Z ##[group]Getting Git version info
+2026-06-30T13:55:45.2346659Z Working directory is '/home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2'
+2026-06-30T13:55:45.2349080Z [command]/usr/bin/git version
+2026-06-30T13:55:45.2434349Z git version 2.54.0
+2026-06-30T13:55:45.2456726Z ##[endgroup]
+2026-06-30T13:55:45.2474664Z Temporarily overriding HOME='/home/runner/work/_temp/f2638c7c-7a41-452e-b6c1-26012e2f6fcb' before making global git config changes
+2026-06-30T13:55:45.2481286Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-30T13:55:45.2482939Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2
+2026-06-30T13:55:45.2540888Z Deleting the contents of '/home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2'
+2026-06-30T13:55:45.2543549Z ##[group]Initializing the repository
+2026-06-30T13:55:45.2557890Z [command]/usr/bin/git init /home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2
+2026-06-30T13:55:45.2735946Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-30T13:55:45.2738173Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-30T13:55:45.2739824Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-30T13:55:45.2745161Z hint: call:
+2026-06-30T13:55:45.2745684Z hint:
+2026-06-30T13:55:45.2746513Z hint: 	git config --global init.defaultBranch <name>
+2026-06-30T13:55:45.2747225Z hint:
+2026-06-30T13:55:45.2747859Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-30T13:55:45.2748812Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-30T13:55:45.2749608Z hint:
+2026-06-30T13:55:45.2750094Z hint: 	git branch -m <name>
+2026-06-30T13:55:45.2750617Z hint:
+2026-06-30T13:55:45.2751272Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-30T13:55:45.2752849Z Initialized empty Git repository in /home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2/.git/
+2026-06-30T13:55:45.2755558Z [command]/usr/bin/git remote add origin https://github.com/sakethsawant1-star/spotify-review-engine-v2
+2026-06-30T13:55:45.2781412Z ##[endgroup]
+2026-06-30T13:55:45.2782925Z ##[group]Disabling automatic garbage collection
+2026-06-30T13:55:45.2785766Z [command]/usr/bin/git config --local gc.auto 0
+2026-06-30T13:55:45.2819452Z ##[endgroup]
+2026-06-30T13:55:45.2820877Z ##[group]Setting up auth
+2026-06-30T13:55:45.2827507Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-30T13:55:45.2863980Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-30T13:55:45.3929123Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-30T13:55:45.3943750Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-30T13:55:45.4097825Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-30T13:55:45.4123661Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-30T13:55:45.4453867Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-30T13:55:45.9267752Z ##[endgroup]
+2026-06-30T13:55:45.9271461Z ##[group]Fetching the repository
+2026-06-30T13:55:45.9301261Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +bd92f8876652cda99778e7342511cf8d661ee51d:refs/remotes/origin/main
+2026-06-30T13:55:46.8943035Z From https://github.com/sakethsawant1-star/spotify-review-engine-v2
+2026-06-30T13:55:46.8951586Z  * [new ref]         bd92f8876652cda99778e7342511cf8d661ee51d -> origin/main
+2026-06-30T13:55:46.9088308Z ##[endgroup]
+2026-06-30T13:55:46.9089576Z ##[group]Determining the checkout info
+2026-06-30T13:55:46.9090777Z ##[endgroup]
+2026-06-30T13:55:46.9091668Z [command]/usr/bin/git sparse-checkout disable
+2026-06-30T13:55:46.9188381Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-30T13:55:46.9234427Z ##[group]Checking out the ref
+2026-06-30T13:55:46.9235938Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-06-30T13:55:46.9611110Z Switched to a new branch 'main'
+2026-06-30T13:55:46.9615784Z branch 'main' set up to track 'origin/main'.
+2026-06-30T13:55:46.9639724Z ##[endgroup]
+2026-06-30T13:55:46.9707669Z [command]/usr/bin/git log -1 --format=%H
+2026-06-30T13:55:46.9743470Z bd92f8876652cda99778e7342511cf8d661ee51d

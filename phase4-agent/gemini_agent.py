@@ -69,7 +69,7 @@ class SpotifyReviewAgent:
         with open(path, "r", encoding="utf-8") as f:
             return f.read().strip()
 
-    def _call_gemini(self, system_prompt: str, user_content: str, retries: int = 8) -> dict:
+    def _call_gemini(self, system_prompt: str, user_content: str, retries: int = 12) -> dict:
         """
         Make a rate-limited Gemini API call with retries.
         """
@@ -103,30 +103,39 @@ class SpotifyReviewAgent:
                 is_503 = "503" in err_str or "UNAVAILABLE" in err_str or "OVERLOADED" in err_str
                 
                 if is_rate_limit:
+                    if attempt == retries:
+                        logger.error(f"Gemini API failed after {retries} attempts. Last error: {e}")
+                        print(f"  [Error] Gemini API failed after {retries} attempts (Quota exhausted). Last error: {e}")
+                        raise
+
                     wait_time = 60
                     import re
                     match = re.search(r"retry in (\d+)", str(e), re.IGNORECASE)
                     if match:
                         wait_time = int(match.group(1)) + 5  # Add a buffer
                     
-                    print(f"  [Rate Limiter] 429 Rate Limit hit. Waiting {wait_time}s for reset...")
+                    print(f"  [Rate Limiter] 429 Rate Limit hit. Waiting {wait_time}s for reset... (Attempt {attempt}/{retries})")
                     time.sleep(wait_time)
-                    # Do not increment attempt, just try again
+                    attempt += 1
                     continue
                 elif is_503:
                     if attempt == retries:
                         logger.error(f"Gemini API failed after {retries} attempts. Last error: {e}")
+                        print(f"  [Error] Gemini API failed after {retries} attempts. Last error: {e}")
                         raise
                     # Exponential backoff for 503
-                    wait_time = 10 * (2 ** (attempt - 1))
+                    wait_time = 15 * (2 ** (attempt - 1))
                     logger.warning(f"Gemini API call failed (attempt {attempt}/{retries}): 503 UNAVAILABLE. Retrying in {wait_time}s...")
+                    print(f"  [Rate Limiter] 503 Unavailable. Retrying in {wait_time}s... (Attempt {attempt}/{retries})")
                     time.sleep(wait_time)
                     attempt += 1
                 else:
                     if attempt == retries:
                         logger.error(f"Gemini API failed after {retries} attempts. Last error: {e}")
+                        print(f"  [Error] Gemini API failed after {retries} attempts. Last error: {e}")
                         raise
                     logger.warning(f"Gemini API call failed (attempt {attempt}/{retries}): {e}. Retrying in 10s...")
+                    print(f"  [Rate Limiter] API call failed: {e}. Retrying in 10s... (Attempt {attempt}/{retries})")
                     time.sleep(10)
                     attempt += 1
 

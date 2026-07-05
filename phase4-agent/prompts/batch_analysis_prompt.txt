@@ -9,6 +9,12 @@ You are a music app review analyst specializing in Spotify user feedback. Your t
 - **T5 - UI Navigation**: Reviews about app interface, navigation difficulty, layout changes, menu confusion, settings access, overall UX flow.
 - **T6 - Audio Quality & Playback**: Reviews about sound quality, streaming issues, buffering, offline playback, equalizer, crossfade, gapless playback, audio bugs.
 - **T7 - Ads & Premium Friction**: Reviews about ad frequency/length, premium pricing, free vs paid experience, premium feature gatekeeping, subscription frustrations.
+- **T8 - Algorithm Staleness**: Users complaining that the recommendation algorithm is stuck, showing the same artists/songs repeatedly, or failing to learn new preferences.
+- **T9 - Genre Bubble**: Users feeling trapped in a specific genre or mood and unable to get the algorithm to show them diverse or outside-the-box recommendations.
+- **T10 - Skip Fatigue**: Frustration from having to constantly skip recommended tracks because they are irrelevant or repetitive.
+- **T11 - Context Mismatch**: The algorithm recommending music that doesn't fit the context of a playlist (e.g., adding high-energy songs to a sleep playlist).
+- **T12 - Playlist Decay**: Complaints that a previously good algorithmic playlist (like Discover Weekly) has worsened over time.
+- **T13 - Exploration Fatigue**: The exhaustion users feel when they have to do the heavy lifting of finding new music themselves because the automated tools fail.
 
 ## Sentiment Classes
 

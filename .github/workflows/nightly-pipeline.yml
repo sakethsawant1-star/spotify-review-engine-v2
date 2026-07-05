@@ -2,8 +2,8 @@ name: Nightly Data Pipeline
 
 on:
   schedule:
-    # Run every day at 3:00 AM IST (21:30 UTC the previous day)
-    - cron: '30 21 * * *'
+    # Run every day at 1:30 PM IST (8:00 AM UTC) to avoid Gemini daily quota exhaustion
+    - cron: '0 8 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 jobs:

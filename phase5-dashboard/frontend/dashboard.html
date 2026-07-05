@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="index.css" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="app-layout">
@@ -45,9 +46,9 @@
             </a></li>
         </ul>
         <div class="sidebar-footer">
-            <button class="run-pipeline-btn" onclick="window.location.href='pipeline.html'">
-                <span class="material-symbols-outlined" style="font-size:18px;">play_arrow</span>
-                Run Pipeline
+            <button class="run-pipeline-btn" onclick="window.location.href='summary.html'">
+                <span class="material-symbols-outlined" style="font-size:18px;">summarize</span>
+                Get Summary
             </button>
         </div>
     </nav>
@@ -71,20 +72,26 @@
 
             <!-- Row 1: KPI Cards -->
             <section class="kpi-grid" id="kpi-cards">
-                <div class="kpi-card">
+                <div class="kpi-card" style="padding-bottom: 8px;">
                     <p class="kpi-label">Total Reviews Analyzed</p>
-                    <h3 class="kpi-value" id="kpi-total">6,083</h3>
-                    <div class="kpi-change positive">
-                        <span class="material-symbols-outlined">trending_up</span>
-                        <span>+12% this week</span>
+                    <h3 class="kpi-value" id="kpi-total" style="font-size: 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <span id="kpi-scraped">--</span> 
+                        <span style="color: var(--color-text-muted); font-size: 16px;">Scraped</span> 
+                        <span class="material-symbols-outlined" style="color: var(--color-text-muted); font-size: 20px;">chevron_right</span>
+                        <span id="kpi-analyzed">--</span>
+                        <span style="color: var(--color-primary); font-size: 16px;">Analyzed</span>
+                    </h3>
+                    <div class="kpi-change neutral" style="margin-top: 12px;">
+                        <span class="material-symbols-outlined">add_circle</span>
+                        <span id="kpi-latest-batch">-- new reviews added to analysis</span>
                     </div>
                 </div>
                 <div class="kpi-card">
-                    <p class="kpi-label">Avg Sentiment Score</p>
-                    <h3 class="kpi-value" id="kpi-sentiment">68%</h3>
+                    <p class="kpi-label">Positive Sentiment</p>
+                    <h3 class="kpi-value" id="kpi-sentiment">—</h3>
                     <div class="kpi-change positive">
                         <span class="material-symbols-outlined">sentiment_satisfied</span>
-                        <span>Positive leaning</span>
+                        <span>of total reviews</span>
                     </div>
                 </div>
                 <div class="kpi-card">
@@ -108,19 +115,10 @@
             <!-- Row 2: Charts -->
             <section class="grid-3-col">
                 <!-- Doughnut Chart: 4-Class Sentiment -->
-                <div class="chart-bg doughnut-container" style="min-height: 300px;">
+                <div class="chart-bg doughnut-container" style="min-height: 300px; display: flex; flex-direction: column; align-items: center;">
                     <h4 class="chart-title" style="align-self: flex-start; width: 100%;">4-Class Sentiment</h4>
-                    <div class="doughnut" id="doughnut-chart">
-                        <div class="doughnut-center">
-                            <span class="value" id="doughnut-value">45%</span>
-                            <span class="label" id="doughnut-label">Positive</span>
-                        </div>
-                    </div>
-                    <div class="doughnut-legend">
-                        <div class="legend-item"><div class="legend-dot" style="background:#1DB954;"></div>Positive</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#F59E0B;"></div>Mixed</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#6B7280;"></div>Neutral</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#EF4444;"></div>Negative</div>
+                    <div style="flex: 1; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; max-height: 250px;">
+                        <canvas id="sentimentChart"></canvas>
                     </div>
                 </div>
 
@@ -213,12 +211,12 @@
                             <span class="material-symbols-outlined" style="color: var(--color-primary);">format_quote</span>
                             Extracted Quotes
                         </h4>
-                        <button class="realtime-btn">
-                            <div class="realtime-dot pulse-dot"></div>
-                            Real-time Feed
+                        <button class="realtime-btn" style="cursor: default;">
+                            <div class="realtime-dot"></div>
+                            Latest Feed
                         </button>
                     </div>
-                    <div style="display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto; padding-right: 8px; gap: 4px;">
+                    <div id="quotes-container" style="display: flex; flex-direction: column; flex-grow: 1; overflow-y: auto; padding-right: 8px; gap: 4px;">
                         <div class="list-row">
                             <div style="width: 48px; padding-top: 4px; display: flex; justify-content: center;">
                                 <span class="badge badge-neg">NEG</span>

@@ -85,7 +85,7 @@
             cursor: pointer;
         }
         .track-row:hover {
-            background-color: var(--color-surface-elevated);
+            background-color: var(--color-surface-hover);
         }
         .track-row:hover .track-date {
             color: var(--color-text-primary);
@@ -130,7 +130,7 @@
             transition: color 0.2s ease;
         }
         .track-row:hover .track-quote {
-            color: #fff;
+            color: var(--color-text-primary);
         }
         .track-themes {
             display: flex;
@@ -186,9 +186,9 @@
             </a></li>
         </ul>
         <div class="sidebar-footer">
-            <button class="run-pipeline-btn" onclick="window.location.href='pipeline.html'">
-                <span class="material-symbols-outlined" style="font-size:18px;">play_arrow</span>
-                Run Pipeline
+            <button class="run-pipeline-btn" onclick="window.location.href='summary.html'">
+                <span class="material-symbols-outlined" style="font-size:18px;">summarize</span>
+                Get Summary
             </button>
         </div>
     </nav>

@@ -1,0 +1,68 @@
+﻿2026-06-30T13:56:17.4392655Z ##[group]Run cd phase2-scrapers
+2026-06-30T13:56:17.4393024Z [36;1mcd phase2-scrapers[0m
+2026-06-30T13:56:17.4393300Z [36;1mpython run_scrapers.py[0m
+2026-06-30T13:56:17.4428361Z shell: /usr/bin/bash -e {0}
+2026-06-30T13:56:17.4428852Z env:
+2026-06-30T13:56:17.4429261Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-06-30T13:56:17.4429989Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-06-30T13:56:17.4430676Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-06-30T13:56:17.4431286Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-06-30T13:56:17.4431902Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-06-30T13:56:17.4432527Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-06-30T13:56:17.4433602Z   DATABASE_URL: ***
+2026-06-30T13:56:17.4433858Z   REDDIT_CLIENT_ID: 
+2026-06-30T13:56:17.4434104Z   REDDIT_CLIENT_SECRET: 
+2026-06-30T13:56:17.4434351Z   REDDIT_USER_AGENT: 
+2026-06-30T13:56:17.4434622Z ##[endgroup]
+2026-06-30T13:56:17.5349914Z 2026-06-30 13:56:17,534 [INFO] run_scrapers: Running scraper: play_store (count=100)
+2026-06-30T13:56:17.5627255Z 2026-06-30 13:56:17,562 [INFO] play_store: Starting play_store scraper (target: 100)
+2026-06-30T13:56:17.5628553Z 2026-06-30 13:56:17,562 [INFO] play_store: Fetching up to 100 reviews for com.spotify.music
+2026-06-30T13:56:17.7665069Z 2026-06-30 13:56:17,766 [INFO] play_store:   Fetched batch: 100 reviews | Total so far: 100
+2026-06-30T13:56:18.7673821Z 2026-06-30 13:56:18,766 [INFO] play_store: Total Play Store reviews collected: 100
+2026-06-30T13:56:18.7692175Z 2026-06-30 13:56:18,769 [ERROR] run_scrapers: Scraper 'play_store' failed: no such table: raw_reviews
+2026-06-30T13:56:18.7693303Z 2026-06-30 13:56:18,769 [INFO] run_scrapers: Pausing 5s before next scraper...
+2026-06-30T13:56:23.7707792Z 2026-06-30 13:56:23,769 [INFO] run_scrapers: Running scraper: app_store (count=100)
+2026-06-30T13:56:23.8402848Z 2026-06-30 13:56:23,840 [INFO] app_store: Starting app_store scraper (target: 100)
+2026-06-30T13:56:23.8404212Z 2026-06-30 13:56:23,840 [INFO] app_store: Fetching up to 50 reviews from App Store [IN]
+2026-06-30T13:56:25.4847820Z 2026-06-30 13:56:25,484 [INFO] app_store:   [IN] Collected: 50 reviews (running total: 50)
+2026-06-30T13:56:26.9857807Z 2026-06-30 13:56:26,984 [INFO] app_store: Fetching up to 50 reviews from App Store [US]
+2026-06-30T13:56:28.3181030Z 2026-06-30 13:56:28,317 [INFO] app_store:   [US] Collected: 50 reviews (running total: 100)
+2026-06-30T13:56:29.8197640Z 2026-06-30 13:56:29,818 [INFO] app_store: Total App Store reviews collected: 100
+2026-06-30T13:56:29.8198588Z 2026-06-30 13:56:29,818 [ERROR] run_scrapers: Scraper 'app_store' failed: no such table: raw_reviews
+2026-06-30T13:56:29.8204302Z 2026-06-30 13:56:29,820 [INFO] run_scrapers: Pausing 5s before next scraper...
+2026-06-30T13:56:34.8208293Z 2026-06-30 13:56:34,820 [INFO] run_scrapers: Running scraper: reddit (count=20)
+2026-06-30T13:56:34.8792805Z 2026-06-30 13:56:34,879 [INFO] reddit: Starting reddit scraper (target: 20)
+2026-06-30T13:56:34.8794151Z 2026-06-30 13:56:34,879 [INFO] reddit: Starting quality-first Reddit scrape. Target: 20 items, 8 subreddits
+2026-06-30T13:56:34.8795357Z 2026-06-30 13:56:34,879 [INFO] reddit: Scraping r/spotify (target: 20, feed: new)
+2026-06-30T13:56:34.8796778Z 2026-06-30 13:56:34,879 [INFO] reddit:   [r/spotify] Fetching 'new' feed (tier=spotify)
+2026-06-30T13:56:35.5668737Z 2026-06-30 13:56:35,566 [INFO] reddit:   [r/spotify] Parsed 100 entries
+2026-06-30T13:56:35.5676387Z 2026-06-30 13:56:35,567 [INFO] reddit:   [r/spotify] Collected 20 posts (filtered out 47)
+2026-06-30T13:56:39.5681738Z 2026-06-30 13:56:39,567 [INFO] reddit: Total Reddit items collected: 20
+2026-06-30T13:56:39.5689553Z 2026-06-30 13:56:39,568 [ERROR] run_scrapers: Scraper 'reddit' failed: no such table: raw_reviews
+2026-06-30T13:56:39.5706592Z Traceback (most recent call last):
+2026-06-30T13:56:39.5707192Z 
+2026-06-30T13:56:39.5719155Z   File "/home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2/phase2-scrapers/run_scrapers.py", line 149, in <module>
+2026-06-30T13:56:39.5720516Z ==================================================
+2026-06-30T13:56:39.5722061Z     main()
+2026-06-30T13:56:39.5722416Z   Review Discovery Engine -- Scraper Run
+2026-06-30T13:56:39.5723760Z   File "/home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2/phase2-scrapers/run_scrapers.py", line 145, in main
+2026-06-30T13:56:39.5724667Z ==================================================
+2026-06-30T13:56:39.5725351Z     print_db_summary()
+2026-06-30T13:56:39.5725725Z   Sources: play_store, app_store, reddit
+2026-06-30T13:56:39.5727265Z   File "/home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2/phase2-scrapers/run_scrapers.py", line 36, in print_db_summary
+2026-06-30T13:56:39.5728492Z   DB: /home/runner/work/spotify-review-engine-v2/spotify-review-engine-v2/data/database.sqlite
+2026-06-30T13:56:39.5729518Z     cursor.execute(
+2026-06-30T13:56:39.5729856Z ==================================================
+2026-06-30T13:56:39.5730661Z sqlite3.OperationalError: no such table: raw_reviews
+2026-06-30T13:56:39.5731007Z 
+2026-06-30T13:56:39.5731297Z 
+2026-06-30T13:56:39.5731650Z ==================================================
+2026-06-30T13:56:39.5732287Z   Scraper Run Complete
+2026-06-30T13:56:39.5733091Z ==================================================
+2026-06-30T13:56:39.5733758Z   [play_store] ERROR: no such table: raw_reviews
+2026-06-30T13:56:39.5734544Z   [app_store] ERROR: no such table: raw_reviews
+2026-06-30T13:56:39.5735229Z   [reddit] ERROR: no such table: raw_reviews
+2026-06-30T13:56:39.5735735Z 
+2026-06-30T13:56:39.5736097Z   Total wall time: 22.0s
+2026-06-30T13:56:39.5736948Z ==================================================
+2026-06-30T13:56:39.5952254Z ##[error]Process completed with exit code 1.

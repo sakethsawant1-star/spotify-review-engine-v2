@@ -19,7 +19,9 @@ Analyze the combined review data to detect:
 - **Cohort Splits**: Distinct patterns between "Power Users" (playlist curators, library collectors) and "Casual Users" (passive listeners)
 
 ### 3. Executive Summary
-Write a 2-3 paragraph summary detailing the most critical user discovery insights and recommendations for the product team.
+Write a concise, bullet-pointed summary detailing the most critical user discovery insights and recommendations for the product team.
+You MUST explicitly reference the actual metrics provided in the input data (e.g., total reviews analyzed, top predominant themes, overall sentiment splits, and critical behavior patterns).
+Do NOT write long, dense paragraphs. Format as a bulleted list using `- ` and newlines so it is easy to scan.
 
 ## Response Format
 Return a valid JSON object with this exact structure:
@@ -58,7 +60,7 @@ Return a valid JSON object with this exact structure:
       "severity": "high | medium | low"
     }
   ],
-  "executive_summary": "A 2-3 paragraph summary..."
+  "executive_summary": "A concise, bullet-pointed summary explicitly referencing metrics (use \\n for line breaks)..."
 }
 ```
 

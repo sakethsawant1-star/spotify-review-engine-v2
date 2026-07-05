@@ -615,7 +615,7 @@ a {
 }
 
 .pattern-card:hover {
-    background-color: #202020;
+    background-color: var(--color-surface-hover);
 }
 
 .pattern-icon {
@@ -652,7 +652,7 @@ a {
 }
 
 .list-row:hover {
-    background-color: var(--color-surface-elevated);
+    background-color: var(--color-surface-hover);
 }
 
 .list-row .quote-text {

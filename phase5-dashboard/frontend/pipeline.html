@@ -384,80 +384,92 @@
             if (connectorEl) connectorEl.className = 'timeline-connector';
         }
     }
-
-    // Trigger actual pipeline execution in backend
-    fetch('/api/pipeline/run', { method: 'POST' })
-        .then(res => res.json())
-        .then(data => console.log('Pipeline started:', data))
-        .catch(err => console.error('Failed to run pipeline', err));
-
+    // MOCK MODE: Simulate the pipeline execution purely on the frontend
+    // This allows the Vercel deployment to show the UI without actually running heavy backend processes.
+    
     const terminalLogs = document.getElementById('terminal-logs');
     terminalLogs.innerHTML = '<p>> Initiating connection to backend...</p>';
 
-    // Poll the backend logs every 1.5 seconds
+    const mockLogs = [
+        "> Starting automated data pipeline...",
+        "  [Info] Loaded configuration from environment.",
+        " ",
+        "> Step 1: Running Scrapers",
+        "  [AppStore] Scraping latest iOS reviews...",
+        "  [AppStore] Collected 245 new reviews.",
+        "  [GooglePlay] Scraping latest Android reviews...",
+        "  [GooglePlay] Collected 412 new reviews.",
+        "  [Reddit] Searching r/spotify for latest threads...",
+        "  [Reddit] Collected 150 relevant comments.",
+        " ",
+        "> Step 2: Running Data Processing",
+        "  [Pipeline] Cleaning up text and removing PII...",
+        "  [Pipeline] Deduplicating 807 raw records...",
+        "  [Pipeline] Stored 780 clean records into PostgreSQL.",
+        " ",
+        "> Step 3: Running LLM Analysis",
+        "  [Agent] Initializing Gemini 2.5 Flash agent...",
+        "  [Agent] Batch analyzing 780 reviews for sentiment and themes...",
+        "  [Agent] Extracting key quotes...",
+        "  [Agent] Synthesizing behavioral insights...",
+        " ",
+        "> PIPELINE_COMPLETE",
+        "  [Success] Dashboard data updated successfully."
+    ];
+
+    let currentLogIndex = 0;
+    let hasStep1 = false;
+    let hasStep2 = false;
+    let hasStep3 = false;
+    let isComplete = false;
+
+    // Simulate logs streaming in every 800ms
     const logInterval = setInterval(() => {
-        fetch('/api/pipeline/logs')
-            .then(res => res.json())
-            .then(data => {
-                if (data.logs && data.logs.length > 0) {
-                    terminalLogs.innerHTML = '';
-                    let hasStep1 = false;
-                    let hasStep2 = false;
-                    let hasStep3 = false;
-                    let isComplete = false;
-                    let isError = false;
-                    let errorMessage = "";
+        if (currentLogIndex >= mockLogs.length) {
+            clearInterval(logInterval);
+            return;
+        }
 
-                    data.logs.forEach(logLine => {
-                        const p = document.createElement('p');
-                        p.innerText = logLine;
-                        terminalLogs.appendChild(p);
+        const logLine = mockLogs[currentLogIndex];
+        const p = document.createElement('p');
+        p.innerText = logLine;
+        terminalLogs.appendChild(p);
+        terminalLogs.scrollTop = terminalLogs.scrollHeight; // Auto-scroll
 
-                        if (logLine.includes('Step 1: Running Scrapers')) hasStep1 = true;
-                        if (logLine.includes('Step 2: Running Data Processing')) hasStep2 = true;
-                        if (logLine.includes('Step 3: Running LLM Analysis')) hasStep3 = true;
-                        if (logLine.includes('PIPELINE_COMPLETE')) isComplete = true;
-                        if (logLine.includes('PIPELINE_ERROR')) {
-                            isError = true;
-                            errorMessage = logLine;
-                        }
-                    });
+        // Check for state changes based on the log output
+        if (logLine.includes('Step 1: Running Scrapers')) hasStep1 = true;
+        if (logLine.includes('Step 2: Running Data Processing')) hasStep2 = true;
+        if (logLine.includes('Step 3: Running LLM Analysis')) hasStep3 = true;
+        if (logLine.includes('PIPELINE_COMPLETE')) isComplete = true;
 
-                    // Update states dynamically
-                    if (isComplete) {
-                        setStepState(1, 'done');
-                        setStepState(2, 'done');
-                        setStepState(3, 'done');
-                        setStepState(4, 'done');
-                        document.getElementById('pipeline-status-title').innerText = "Analysis Complete!";
-                        document.getElementById('completion-container').style.display = 'block';
-                        clearInterval(logInterval);
-                    } else if (isError) {
-                        document.getElementById('pipeline-status-title').innerText = "Pipeline Error Occurred";
-                        clearInterval(logInterval);
-                    } else if (hasStep3) {
-                        setStepState(1, 'done');
-                        setStepState(2, 'done');
-                        setStepState(3, 'active');
-                        setStepState(4, 'pending');
-                    } else if (hasStep2) {
-                        setStepState(1, 'done');
-                        setStepState(2, 'active');
-                        setStepState(3, 'pending');
-                        setStepState(4, 'pending');
-                    } else if (hasStep1) {
-                        setStepState(1, 'active');
-                        setStepState(2, 'pending');
-                        setStepState(3, 'pending');
-                        setStepState(4, 'pending');
-                    }
+        // Update states dynamically
+        if (isComplete) {
+            setStepState(1, 'done');
+            setStepState(2, 'done');
+            setStepState(3, 'done');
+            setStepState(4, 'done');
+            document.getElementById('pipeline-status-title').innerText = "Analysis Complete!";
+            document.getElementById('completion-container').style.display = 'block';
+            clearInterval(logInterval);
+        } else if (hasStep3) {
+            setStepState(1, 'done');
+            setStepState(2, 'done');
+            setStepState(3, 'active');
+            setStepState(4, 'pending');
+        } else if (hasStep2) {
+            setStepState(1, 'done');
+            setStepState(2, 'active');
+            setStepState(3, 'pending');
+            setStepState(4, 'pending');
+        } else if (hasStep1) {
+            setStepState(1, 'active');
+            setStepState(2, 'pending');
+            setStepState(3, 'pending');
+            setStepState(4, 'pending');
+        }
 
-                    // Auto-scroll
-                    terminalLogs.scrollTop = terminalLogs.scrollHeight;
-                }
-            })
-            .catch(err => console.error('Failed to fetch logs', err));
-    }, 1500);
+        currentLogIndex++;
+    }, 800);
 </script>
 </body>
 </html>
